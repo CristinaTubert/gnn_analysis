@@ -32,7 +32,7 @@ from torch_geometric.data import DataLoader
 
 arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
 split_idx = arxiv.get_idx_split()
-valid_loader = DataLoader(arxiv[split_idx["valid"]], batch_size=32, shuffle=False)
+valid_loader = DataLoader(arxiv[split_idx["valid"]], shuffle=False)
 
 def ogb_to_graph(ogb):
   edge_index = ogb[0][0]['edge_index']
