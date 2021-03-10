@@ -43,7 +43,7 @@ def ogb_to_graph(ogb):
   graph = nx.to_networkx_graph(edge_list)
   return graph
 
-G = ogb_to_graph(partial_arxiv)
+G = partial_arxiv.to_networkx
 print('num of nodes: {}'.format(G.number_of_nodes()))
 print('num of edges: {}'.format(G.number_of_edges()))
 G_deg = nx.degree_histogram(G)
