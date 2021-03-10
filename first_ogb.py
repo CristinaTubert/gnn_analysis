@@ -24,15 +24,15 @@ import torch
 import torch_geometric.transforms as T
 from torch_geometric.data import Data
 
-products = ogbn.NodePropPredDataset(name='ogbn-products', root='dataset/')
+#products = ogbn.NodePropPredDataset(name='ogbn-products', root='dataset/')
 
-proteins = ogbn.NodePropPredDataset(name='ogbn-proteins', root='dataset/')
+#proteins = ogbn.NodePropPredDataset(name='ogbn-proteins', root='dataset/')
 
 arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
 
-papers = ogbn.NodePropPredDataset(name='ogbn-papers100M', root='dataset/')
+#papers = ogbn.NodePropPredDataset(name='ogbn-papers100M', root='dataset/')
 
-mag = ogbn.NodePropPredDataset(name='ogbn-mag', root='dataset/')
+#mag = ogbn.NodePropPredDataset(name='ogbn-mag', root='dataset/')
 
 def ogb_to_graph(ogb):
   edge_index = ogb[0][0]['edge_index']
