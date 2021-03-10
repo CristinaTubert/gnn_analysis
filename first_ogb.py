@@ -23,7 +23,6 @@ from torch_geometric.data import DataLoader
 import torch
 import torch_geometric.transforms as T
 from torch_geometric.data import Data
-from torch_geometric.data import DataLoader
 
 #products = ogbn.NodePropPredDataset(name='ogbn-products', root='dataset/')
 #proteins = ogbn.NodePropPredDataset(name='ogbn-proteins', root='dataset/')
@@ -32,7 +31,7 @@ from torch_geometric.data import DataLoader
 
 arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
 split_idx = arxiv.get_idx_split()
-valid_loader = DataLoader(arxiv[split_idx["valid"]], shuffle=False)
+partial_arxiv = split_idx["valid"]
 
 def ogb_to_graph(ogb):
   edge_index = ogb[0][0]['edge_index']
@@ -44,7 +43,7 @@ def ogb_to_graph(ogb):
   graph = nx.to_networkx_graph(edge_list)
   return graph
 
-G = ogb_to_graph(valid_loader)
+G = ogb_to_graph(partial_arxiv)
 print('num of nodes: {}'.format(G.number_of_nodes()))
 print('num of edges: {}'.format(G.number_of_edges()))
 G_deg = nx.degree_histogram(G)
