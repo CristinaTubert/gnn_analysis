@@ -14,7 +14,6 @@ Original file is located at
 !pip install torch_scatter"""
 
 import networkx as nx
-import cugraph as cnx
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -24,16 +23,16 @@ from torch_geometric.data import DataLoader
 import torch
 import torch_geometric.transforms as T
 from torch_geometric.data import Data
+from torch_geometric.data import DataLoader
 
 #products = ogbn.NodePropPredDataset(name='ogbn-products', root='dataset/')
-
 #proteins = ogbn.NodePropPredDataset(name='ogbn-proteins', root='dataset/')
+#papers = ogbn.NodePropPredDataset(name='ogbn-papers100M', root='dataset/')
+#mag = ogbn.NodePropPredDataset(name='ogbn-mag', root='dataset/')
 
 arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
-
-#papers = ogbn.NodePropPredDataset(name='ogbn-papers100M', root='dataset/')
-
-#mag = ogbn.NodePropPredDataset(name='ogbn-mag', root='dataset/')
+split_idx = arxiv.get_idx_split()
+valid_loader = DataLoader(arxiv[split_idx["valid"]], batch_size=32, shuffle=False)
 
 def ogb_to_graph(ogb):
   edge_index = ogb[0][0]['edge_index']
@@ -45,14 +44,14 @@ def ogb_to_graph(ogb):
   graph = nx.to_networkx_graph(edge_list)
   return graph
 
-G = ogb_to_graph(arxiv)
+G = ogb_to_graph(valid_loader)
 print('num of nodes: {}'.format(G.number_of_nodes()))
 print('num of edges: {}'.format(G.number_of_edges()))
-G_deg = cnx.degree_histogram(G)
+G_deg = nx.degree_histogram(G)
 G_deg_sum = [a * b for a, b in zip(G_deg, range(0, len(G_deg)))]
 print('average degree: {}'.format(sum(G_deg_sum) / G.number_of_nodes()))
-if cnx.is_connected(G):
-    print('average path length: {}'.format(cnx.average_shortest_path_length(G)))
-    print('average diameter: {}'.format(cnx.diameter(G)))
-G_cluster = sorted(list(cnx.clustering(G).values()))
+if nx.is_connected(G):
+    print('average path length: {}'.format(nx.average_shortest_path_length(G)))
+    print('average diameter: {}'.format(nx.diameter(G)))
+G_cluster = sorted(list(nx.clustering(G).values()))
 print('average clustering coefficient: {}'.format(sum(G_cluster) / len(G_cluster)))
