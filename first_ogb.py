@@ -14,6 +14,7 @@ Original file is located at
 !pip install torch_scatter"""
 
 import networkx as nx
+import cugraph as cnx
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -47,11 +48,11 @@ def ogb_to_graph(ogb):
 G = ogb_to_graph(arxiv)
 print('num of nodes: {}'.format(G.number_of_nodes()))
 print('num of edges: {}'.format(G.number_of_edges()))
-G_deg = nx.degree_histogram(G)
+G_deg = cnx.degree_histogram(G)
 G_deg_sum = [a * b for a, b in zip(G_deg, range(0, len(G_deg)))]
 print('average degree: {}'.format(sum(G_deg_sum) / G.number_of_nodes()))
 if nx.is_connected(G):
-    print('average path length: {}'.format(nx.average_shortest_path_length(G)))
-    print('average diameter: {}'.format(nx.diameter(G)))
-G_cluster = sorted(list(nx.clustering(G).values()))
+    print('average path length: {}'.format(cnx.average_shortest_path_length(G)))
+    print('average diameter: {}'.format(cnx.diameter(G)))
+G_cluster = sorted(list(cnx.clustering(G).values()))
 print('average clustering coefficient: {}'.format(sum(G_cluster) / len(G_cluster)))
