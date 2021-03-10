@@ -51,7 +51,7 @@ print('num of edges: {}'.format(G.number_of_edges()))
 G_deg = cnx.degree_histogram(G)
 G_deg_sum = [a * b for a, b in zip(G_deg, range(0, len(G_deg)))]
 print('average degree: {}'.format(sum(G_deg_sum) / G.number_of_nodes()))
-if nx.is_connected(G):
+if cnx.is_connected(G):
     print('average path length: {}'.format(cnx.average_shortest_path_length(G)))
     print('average diameter: {}'.format(cnx.diameter(G)))
 G_cluster = sorted(list(cnx.clustering(G).values()))
