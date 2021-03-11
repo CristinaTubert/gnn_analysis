@@ -1,0 +1,83 @@
+Max number of nodes: 5000 
+
+FIRST SPLIT INFORMATION
+Split type: valid
+Number of nodes first split: 29799
+SUB-SPLIT INFORMATION
+Split number: 1
+Number of connected subgraphs: 303
+Number of nodes on the biggest subgraph: 111
+Number of nodes on the second biggest subgraph: 38
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 111
+Number of edges: 117
+Average degree: 2.108108108108108
+Average path length: 7.87944307944308
+Average diameter: 18
+Average clustering coefficient: 0.028528528528528527 
+
+SUB-SPLIT INFORMATION
+Split number: 2
+Number of connected subgraphs: 315
+Number of nodes on the biggest subgraph: 167
+Number of nodes on the second biggest subgraph: 19
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 167
+Number of edges: 185
+Average degree: 2.215568862275449
+Average path length: 9.67383305677801
+Average diameter: 25
+Average clustering coefficient: 0.049857428001140576 
+
+SUB-SPLIT INFORMATION
+Split number: 3
+Number of connected subgraphs: 342
+Number of nodes on the biggest subgraph: 190
+Number of nodes on the second biggest subgraph: 66
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 190
+Number of edges: 210
+Average degree: 2.210526315789474
+Average path length: 8.651740462266778
+Average diameter: 21
+Average clustering coefficient: 0.06555137844611529 
+
+SUB-SPLIT INFORMATION
+Split number: 4
+Number of connected subgraphs: 316
+Number of nodes on the biggest subgraph: 333
+Number of nodes on the second biggest subgraph: 17
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 333
+Number of edges: 393
+Average degree: 2.3603603603603602
+Average path length: 8.91924454575057
+Average diameter: 25
+Average clustering coefficient: 0.08117313578362861 
+
+SUB-SPLIT INFORMATION
+Split number: 5
+Number of connected subgraphs: 317
+Number of nodes on the biggest subgraph: 58
+Number of nodes on the second biggest subgraph: 34
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 58
+Number of edges: 59
+Average degree: 2.0344827586206895
+Average path length: 4.4162129461585
+Average diameter: 12
+Average clustering coefficient: 0.028735632183908042 
+
+SUB-SPLIT INFORMATION
+Split number: 6
+Number of connected subgraphs: 293
+Number of nodes on the biggest subgraph: 66
+Number of nodes on the second biggest subgraph: 53
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 66
+Number of edges: 89
+Average degree: 2.696969696969697
+Average path length: 4.328205128205128
+Average diameter: 11
+Average clustering coefficient: 0.07871446292498924 
+
