@@ -37,20 +37,23 @@ def ogb_to_first_split(ogb_dataset, split_type):
 
   G = nx.to_networkx_graph(edge_list)
   print('Number of nodes first split:', G.number_of_nodes())
-  print('Number of edges first split:', G.number_of_edges())
+  print('Number of edges first split:', G.number_of_edges(), '\n')
   
-  return edge_list
+  return G
 
-def do_sub_splits(edge_list, mnodes):
+def do_sub_splits(G, mnodes):
   i = 0
   nsplit = 1
 
-  while i < (len(edge_list) + mnodes):
+  while i <= G.number_of_nodes():
     j = i + mnodes-1
-    G = nx.to_networkx_graph(edge_list[i:j]) #G might not be fully connected
+    if (j > G.number_of_nodes()): j = G.number_of_nodes()
+    mask_nodes = list(range(i,j))
 
-    print('i =', i, 'j=', j)
-    cc = biggest_connected_subraph(G, nsplit)
+    subG = G.subgraph(mask_nodes).copy() #G might not be fully connected
+
+    print('i =', i, 'j=', j, 'len=', len(edge_list))
+    cc = biggest_connected_subraph(subG, nsplit)
     if (cc==None): break
     extract_features(cc, nsplit)
 
@@ -69,8 +72,6 @@ def biggest_connected_subraph(G, nsplit):
   print('Number of connected subgraphs:', len(cc))
   print('Number of nodes on the biggest subgraph:', len(cc[0]))
   print('Number of nodes on the second biggest subgraph:', len(cc[1]))
-
-  print()
 
   return cc[0]
 
@@ -97,21 +98,19 @@ def extract_features(G, nsplit):
 
   G_cluster = sorted(list(nx.clustering(G).values()))
   average_cluster_coef = sum(G_cluster) / len(G_cluster)
-  print('Average clustering coefficient:', average_cluster_coef)
-
-  print()
+  print('Average clustering coefficient:', average_cluster_coef, '\n')
 
 ### MAIN
 arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
 max_num_nodes = 5000
-print("Max number of nodes:", max_num_nodes)
+print("Max number of nodes:", max_num_nodes, '\n')
 
 #split_list = ["train", "valid", "test"]
 split_list = ["valid"]
 
 for split in split_list:
-  edge_list = ogb_to_first_split(arxiv, split)
-  do_sub_splits(edge_list, max_num_nodes)
+  G = ogb_to_first_split(arxiv, split)
+  do_sub_splits(G, max_num_nodes)
   
   
 
