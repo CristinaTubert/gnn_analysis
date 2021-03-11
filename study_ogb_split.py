@@ -15,53 +15,46 @@ import torch
 #papers = ogbn.NodePropPredDataset(name='ogbn-papers100M', root='dataset/')
 #mag = ogbn.NodePropPredDataset(name='ogbn-mag', root='dataset/')
 
-def ogb_to_first_split(ogb_dataset, split_type):
+MAXNODES = 5000
+
+def ogb_to_subgraphs(ogb_dataset, split_type):
 
   #first split dataset
   split_idx = ogb_dataset.get_idx_split()
   partial_dataset = split_idx[split_type]
 
-  #induced graph containing subset nodes
-  edge_index_tensor = torch.LongTensor([x for x in ogb_dataset[0][0]['edge_index']])
-  partial_nodes_tensor = torch.LongTensor([x for x in partial_dataset])
-  edge_index, _ = utils.subgraph(partial_nodes_tensor, edge_index_tensor)
-
-  #convert to networkx graph
-  edge_list = []
-  for i in range(len(edge_index[0])):
-    edge_list.append((int(edge_index[0][i]), int(edge_index[1][i])))
-
   print('FIRST SPLIT INFORMATION')
-
   print('Split type:', split_type)
+  print('Number of nodes first split:', len(partial_dataset))
 
-  G = nx.to_networkx_graph(edge_list)
-  print('Number of nodes first split:', G.number_of_nodes())
-  print('Number of edges first split:', G.number_of_edges(), '\n')
-  
-  return G
-
-def do_sub_splits(G, mnodes):
+  #second splits dataset
   i = 0
   nsplit = 1
+  lsubG = []
 
-  while i <= G.number_of_nodes():
-    j = i + mnodes-1
-    if (j > G.number_of_nodes()): j = G.number_of_nodes()
-    mask_nodes = list(range(i,j))
+  while i < len(partial_dataset):
+    j = min((i + MAXNODES), partial_dataset)
+    nodes_subset = partial_dataset[i:j]
 
-    subG = G.subgraph(mask_nodes).copy() #G might not be fully connected
+    #induced subgraph containing subset nodes
+    edge_index_tensor = torch.LongTensor([x for x in ogb_dataset[0][0]['edge_index']])
+    nodes_subset_tensor = torch.LongTensor([x for x in nodes_subset])
+    edge_index, _ = utils.subgraph(nodes_subset_tensor, edge_index_tensor)
 
-    print('i =', i, 'j=', j)
-    cc = biggest_connected_subraph(subG, nsplit)
-    if (cc==None): break
-    extract_features(cc, nsplit)
+    #convert to networkx graph
+    edge_list = []
+    for i in range(len(edge_index[0])):
+      edge_list.append((int(edge_index[0][i]), int(edge_index[1][i])))
 
-    i = i + mnodes
+    G = nx.to_networkx_graph(edge_list)
+    lsubG.append((nsplit, G))
+
+    i = i + MAXNODES
     nsplit = nsplit+1
+  
+  return lsubG
 
-
-def biggest_connected_subraph(G, nsplit):
+def biggest_connected_subraph(nsplit, G):
   #generate a sorted list of connected components, largest first
   cc = [G.subgraph(c).copy() for c in sorted(nx.algorithms.components.connected_components(G), key=len, reverse=True)]
   if (len(cc)==0): return None
@@ -75,7 +68,7 @@ def biggest_connected_subraph(G, nsplit):
 
   return cc[0]
 
-def extract_features(G, nsplit):
+def extract_features(nsplit, G):
 
   print('BIGGEST CONNECTED SUBGRAPH INFORMATION')
 
@@ -84,6 +77,7 @@ def extract_features(G, nsplit):
 
   G_deg = nx.degree_histogram(G)
   plt.plot(G_deg)
+  plt.xlabel("Node degree")
   path = "./degree_histograms/histogram" + str(nsplit) + ".png"
   plt.savefig(path)
   plt.clf()
@@ -102,15 +96,19 @@ def extract_features(G, nsplit):
 
 ### MAIN
 arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
-max_num_nodes = 5000
-print("Max number of nodes:", max_num_nodes, '\n')
+print("Max number of nodes:", NSPLIT, '\n')
 
 #split_list = ["train", "valid", "test"]
 split_list = ["valid"]
 
 for split in split_list:
-  G = ogb_to_first_split(arxiv, split)
-  do_sub_splits(G, max_num_nodes)
+  lsubG = ogb_to_subgraphs(arxiv, split)
+  for nsplit,subG in lsubG:
+    cc = biggest_connected_subraph(nsplit, subG)
+    if (cc==None): break
+    extract_features(nsplit,cc)
+
+
   
   
 
