@@ -52,7 +52,7 @@ def do_sub_splits(G, mnodes):
 
     subG = G.subgraph(mask_nodes).copy() #G might not be fully connected
 
-    print('i =', i, 'j=', j, 'len=', len(edge_list))
+    print('i =', i, 'j=', j)
     cc = biggest_connected_subraph(subG, nsplit)
     if (cc==None): break
     extract_features(cc, nsplit)
