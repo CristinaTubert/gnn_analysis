@@ -15,8 +15,6 @@ import torch
 #papers = ogbn.NodePropPredDataset(name='ogbn-papers100M', root='dataset/')
 #mag = ogbn.NodePropPredDataset(name='ogbn-mag', root='dataset/')
 
-MAXNODES = 7500
-
 def ogb_to_subgraphs(ogb_dataset, split_type):
 
   #first split dataset
@@ -96,17 +94,15 @@ def extract_features(nsplit, G):
 
 ### MAIN
 arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
+MAXNODES = input()
+split = str(input())
 print("Max number of nodes:", MAXNODES, '\n')
 
-#split_list = ["train", "valid", "test"]
-split_list = ["valid"]
-
-for split in split_list:
-  lsubG = ogb_to_subgraphs(arxiv, split)
-  for nsplit,subG in lsubG:
-    cc = biggest_connected_subraph(nsplit, subG)
-    if (cc==None): break
-    extract_features(nsplit,cc)
+lsubG = ogb_to_subgraphs(arxiv, split)
+for nsplit,subG in lsubG:
+  cc = biggest_connected_subraph(nsplit, subG)
+  if (cc==None): break
+  extract_features(nsplit,cc)
 
 
   
