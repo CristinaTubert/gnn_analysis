@@ -7,6 +7,7 @@ import ogb.nodeproppred as ogbn
 import torch_geometric
 from torch_geometric.data import Data
 import torch_geometric.utils as utils
+import torch
 
 ### OGB DATASETS NODE PREDICTION
 #products = ogbn.NodePropPredDataset(name='ogbn-products', root='dataset/')
