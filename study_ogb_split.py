@@ -85,6 +85,7 @@ def extract_features(G, nsplit):
   plt.plot(G_deg)
   path = "./degree_histograms/histogram" + str(nsplit) + ".png"
   plt.savefig(path)
+  plt.clf()
 
   G_deg_sum = [a * b for a, b in zip(G_deg, range(0, len(G_deg)))]
   average_degree = sum(G_deg_sum) / G.number_of_nodes()
@@ -102,7 +103,7 @@ def extract_features(G, nsplit):
 
 ### MAIN
 arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
-max_num_nodes = 2000
+max_num_nodes = 5000
 print("Max number of nodes:", max_num_nodes)
 
 #split_list = ["train", "valid", "test"]
