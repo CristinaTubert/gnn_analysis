@@ -50,19 +50,30 @@ def ogb_to_graph(ogb, partial_ogb):
   graph = nx.to_networkx_graph(edge_list)
   return graph
 
-G = ogb_to_graph(arxiv, partial_arxiv)
+def connected_subraph(G):
+  graph_generator = nx.algorithms.components.connected_components(G)
+  return list(graph_generator)
 
-print('num of nodes: {}'.format(G.number_of_nodes()))
 
-print('num of edges: {}'.format(G.number_of_edges()))
+def prints(G):
+  print('num of nodes: {}'.format(G.number_of_nodes()))
 
-G_deg = nx.degree_histogram(G)
-G_deg_sum = [a * b for a, b in zip(G_deg, range(0, len(G_deg)))]
-print('average degree: {}'.format(sum(G_deg_sum) / G.number_of_nodes()))
+  print('num of edges: {}'.format(G.number_of_edges()))
 
-if nx.is_connected(G):
+  G_deg = nx.degree_histogram(G)
+  G_deg_sum = [a * b for a, b in zip(G_deg, range(0, len(G_deg)))]
+  print('average degree: {}'.format(sum(G_deg_sum) / G.number_of_nodes()))
+
+  if nx.is_connected(G):
     print('average path length: {}'.format(nx.average_shortest_path_length(G)))
     print('average diameter: {}'.format(nx.diameter(G)))
 
-G_cluster = sorted(list(nx.clustering(G).values()))
-print('average clustering coefficient: {}'.format(sum(G_cluster) / len(G_cluster)))
+  G_cluster = sorted(list(nx.clustering(G).values()))
+  print('average clustering coefficient: {}'.format(sum(G_cluster) / len(G_cluster)))
+
+
+G = ogb_to_graph(arxiv, partial_arxiv)
+subgraph_list = connected_subraph(G)
+for g in subgraph_list:
+  prints(g)
+
