@@ -51,7 +51,7 @@ def do_sub_splits(edge_list, mnodes):
 
     print('i =', i, 'j=', j)
     cc = biggest_connected_subraph(G, nsplit)
-    if (cc==None) break
+    if (cc==None): break
     extract_features(cc, nsplit)
 
     i = i + mnodes
@@ -61,7 +61,7 @@ def do_sub_splits(edge_list, mnodes):
 def biggest_connected_subraph(G, nsplit):
   #generate a sorted list of connected components, largest first
   cc = [G.subgraph(c).copy() for c in sorted(nx.algorithms.components.connected_components(G), key=len, reverse=True)]
-  if (len(cc)==0) return None
+  if (len(cc)==0): return None
 
   print('SUB-SPLIT INFORMATION')
 
