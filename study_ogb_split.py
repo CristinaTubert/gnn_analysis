@@ -94,7 +94,7 @@ def extract_features(nsplit, G):
 
 ### MAIN
 arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
-MAXNODES = input()
+MAXNODES = int(input())
 split = str(input())
 print("Max number of nodes:", MAXNODES, '\n')
 
