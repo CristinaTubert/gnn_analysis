@@ -1,14 +1,9 @@
-Downloading http://snap.stanford.edu/ogb/data/nodeproppred/arxiv.zip
-Extracting dataset/arxiv.zip
-Loading necessary files...
-This might take a while.
-Processing graphs...
-Saving...
 Max number of nodes: 2000
 FIRST SPLIT INFORMATION
 Split type: valid
 Number of nodes first split: 17290
 Number of edges first split: 28436
+i = 0 j= 1999
 SUB-SPLIT INFORMATION
 Split number: 1
 Number of connected subgraphs: 644
@@ -23,6 +18,7 @@ Average path length: 8.469989568226344
 Average diameter: 24
 Average clustering coefficient: 0.06790747419096291
 
+i = 2000 j= 3999
 SUB-SPLIT INFORMATION
 Split number: 2
 Number of connected subgraphs: 681
@@ -37,6 +33,7 @@ Average path length: 8.978209675131223
 Average diameter: 21
 Average clustering coefficient: 0.05038183294003808
 
+i = 4000 j= 5999
 SUB-SPLIT INFORMATION
 Split number: 3
 Number of connected subgraphs: 532
@@ -51,6 +48,7 @@ Average path length: 11.53822122197216
 Average diameter: 32
 Average clustering coefficient: 0.021752895025479797
 
+i = 6000 j= 7999
 SUB-SPLIT INFORMATION
 Split number: 4
 Number of connected subgraphs: 549
@@ -65,6 +63,7 @@ Average path length: 8.998278504398211
 Average diameter: 28
 Average clustering coefficient: 0.013942584357000246
 
+i = 8000 j= 9999
 SUB-SPLIT INFORMATION
 Split number: 5
 Number of connected subgraphs: 507
@@ -79,6 +78,7 @@ Average path length: 8.425764097963269
 Average diameter: 24
 Average clustering coefficient: 0.03693515723081463
 
+i = 10000 j= 11999
 SUB-SPLIT INFORMATION
 Split number: 6
 Number of connected subgraphs: 426
@@ -93,6 +93,7 @@ Average path length: 8.467183300717547
 Average diameter: 26
 Average clustering coefficient: 0.013482138738988056
 
+i = 12000 j= 13999
 SUB-SPLIT INFORMATION
 Split number: 7
 Number of connected subgraphs: 410
@@ -107,6 +108,7 @@ Average path length: 10.59972658677319
 Average diameter: 33
 Average clustering coefficient: 0.017687838270996653
 
+i = 14000 j= 15999
 SUB-SPLIT INFORMATION
 Split number: 8
 Number of connected subgraphs: 397
@@ -121,6 +123,7 @@ Average path length: 17.317556774593566
 Average diameter: 43
 Average clustering coefficient: 0.01851159307193267
 
+i = 16000 j= 17999
 SUB-SPLIT INFORMATION
 Split number: 9
 Number of connected subgraphs: 315
@@ -135,6 +138,7 @@ Average path length: 8.84483174647859
 Average diameter: 26
 Average clustering coefficient: 0.013428271433760915
 
+i = 18000 j= 19999
 SUB-SPLIT INFORMATION
 Split number: 10
 Number of connected subgraphs: 257
@@ -149,6 +153,7 @@ Average path length: 9.401157920118925
 Average diameter: 22
 Average clustering coefficient: 0.011357602683565693
 
+i = 20000 j= 21999
 SUB-SPLIT INFORMATION
 Split number: 11
 Number of connected subgraphs: 304
@@ -163,6 +168,7 @@ Average path length: 9.79334367696164
 Average diameter: 24
 Average clustering coefficient: 0.020451729779086974
 
+i = 22000 j= 23999
 SUB-SPLIT INFORMATION
 Split number: 12
 Number of connected subgraphs: 398
@@ -177,6 +183,7 @@ Average path length: 9.19371864548495
 Average diameter: 27
 Average clustering coefficient: 0.011411738533095437
 
+i = 24000 j= 25999
 SUB-SPLIT INFORMATION
 Split number: 13
 Number of connected subgraphs: 559
@@ -191,6 +198,7 @@ Average path length: 11.333824727935184
 Average diameter: 33
 Average clustering coefficient: 0.03891269013518402
 
+i = 26000 j= 27999
 SUB-SPLIT INFORMATION
 Split number: 14
 Number of connected subgraphs: 505
@@ -205,6 +213,7 @@ Average path length: 11.544410575989524
 Average diameter: 31
 Average clustering coefficient: 0.012564548675659785
 
+i = 28000 j= 29999
 SUB-SPLIT INFORMATION
 Split number: 15
 Number of connected subgraphs: 219
@@ -219,6 +228,4 @@ Average path length: 9.299110129800615
 Average diameter: 22
 Average clustering coefficient: 0.0027944539736992568
 
-SUB-SPLIT INFORMATION
-Split number: 16
-Number of connected subgraphs: 0
+i = 30000 j= 31999
