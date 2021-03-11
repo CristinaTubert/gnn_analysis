@@ -15,7 +15,7 @@ import torch
 #papers = ogbn.NodePropPredDataset(name='ogbn-papers100M', root='dataset/')
 #mag = ogbn.NodePropPredDataset(name='ogbn-mag', root='dataset/')
 
-MAXNODES = 7000
+MAXNODES = 7500
 
 def ogb_to_subgraphs(ogb_dataset, split_type):
 
