@@ -23,6 +23,8 @@ from torch_geometric.data import DataLoader
 import torch
 import torch_geometric.transforms as T
 from torch_geometric.data import Data
+import torch_geometric.utils as utils
+import torch_geometric
 
 #products = ogbn.NodePropPredDataset(name='ogbn-products', root='dataset/')
 #proteins = ogbn.NodePropPredDataset(name='ogbn-proteins', root='dataset/')
