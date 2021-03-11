@@ -63,9 +63,9 @@ def biggest_connected_subraph(G, nsplit):
   print('SUB-SPLIT INFORMATION')
 
   print('Split number:', str(nsplit))
-  print('Number of connected subgraphs', len(cc))
-  print('Number of nodes on the biggest subgraph', len(cc[0]))
-  print('Number of nodes on the second biggest subgraph', len(cc[1]))
+  print('Number of connected subgraphs:', len(cc))
+  print('Number of nodes on the biggest subgraph:', len(cc[0]))
+  print('Number of nodes on the second biggest subgraph:', len(cc[1]))
 
   print()
 
