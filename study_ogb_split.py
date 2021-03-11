@@ -33,7 +33,7 @@ def ogb_to_subgraphs(ogb_dataset, split_type):
   lsubG = []
 
   while i < len(partial_dataset):
-    j = min((i + MAXNODES), partial_dataset)
+    j = min((i + MAXNODES), len(partial_dataset))
     nodes_subset = partial_dataset[i:j]
 
     #induced subgraph containing subset nodes
