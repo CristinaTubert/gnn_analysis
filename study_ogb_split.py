@@ -96,7 +96,7 @@ def extract_features(nsplit, G):
 
 ### MAIN
 arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
-print("Max number of nodes:", NSPLIT, '\n')
+print("Max number of nodes:", MAXNODES, '\n')
 
 #split_list = ["train", "valid", "test"]
 split_list = ["valid"]
