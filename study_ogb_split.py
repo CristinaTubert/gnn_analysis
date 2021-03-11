@@ -44,8 +44,8 @@ def ogb_to_subgraphs(ogb_dataset, split_type):
 
     #convert to networkx graph
     edge_list = []
-    for i in range(len(edge_index[0])):
-      edge_list.append((int(edge_index[0][i]), int(edge_index[1][i])))
+    for k in range(len(edge_index[0])):
+      edge_list.append((int(edge_index[0][k]), int(edge_index[1][k])))
 
     G = nx.to_networkx_graph(edge_list)
     lsubG.append((nsplit, G))
