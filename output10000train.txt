@@ -1,0 +1,16 @@
+Max number of nodes: 10000 
+
+FIRST SPLIT INFORMATION
+Split type: train
+Number of nodes first split: 86619 
+
+SUB-SPLIT INFORMATION
+Split number: 1
+Number of connected subgraphs: 1
+Number of nodes on the biggest subgraph: 10000
+Number of nodes on the second biggest subgraph: 0
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 10000
+Number of edges: 2693911
+Average degree: 538.7822
+Average path length: 2.032901210121012
