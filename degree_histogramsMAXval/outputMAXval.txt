@@ -1,0 +1,20 @@
+Max number of nodes: 29799 
+
+FIRST SPLIT INFORMATION
+Split type: valid
+Number of nodes first split: 29799 
+
+SUB-SPLIT INFORMATION
+Split number: 1
+Number of connected subgraphs: 1773
+Number of nodes on the biggest subgraph: 12107
+Number of nodes on the second biggest subgraph: 46
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 12107
+Number of edges: 24541
+Average degree: 4.054018336499546
+Average path length: 7.445732583456415
+Average diameter: 27
+Average clustering coefficient: 0.1362525334356809 
+
+Execution time: 219.95279717445374 seconds
