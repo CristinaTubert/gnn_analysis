@@ -96,12 +96,14 @@ def extract_features(nsplit, G):
 ### MAIN
 start_time = time.time()
 
-arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
+#arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
+proteins = ogbn.NodePropPredDataset(name='ogbn-proteins', root='dataset/')
+
 MAXNODES = int(input())
 split = str(input())
 print("Max number of nodes:", MAXNODES, '\n')
 
-lsubG = ogb_to_subgraphs(arxiv, split)
+lsubG = ogb_to_subgraphs(proteins, split)
 for nsplit,subG in lsubG:
   cc = biggest_connected_subraph(nsplit, subG)
   if (cc==None): break
