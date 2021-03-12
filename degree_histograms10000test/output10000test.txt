@@ -1,0 +1,72 @@
+Max number of nodes: 10000 
+
+FIRST SPLIT INFORMATION
+Split type: test
+Number of nodes first split: 48603 
+
+SUB-SPLIT INFORMATION
+Split number: 1
+Number of connected subgraphs: 685
+Number of nodes on the biggest subgraph: 885
+Number of nodes on the second biggest subgraph: 34
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 885
+Number of edges: 1005
+Average degree: 2.2711864406779663
+Average path length: 16.36278344453818
+Average diameter: 50
+Average clustering coefficient: 0.06178876712518982 
+
+SUB-SPLIT INFORMATION
+Split number: 2
+Number of connected subgraphs: 677
+Number of nodes on the biggest subgraph: 1054
+Number of nodes on the second biggest subgraph: 34
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 1054
+Number of edges: 1204
+Average degree: 2.284629981024668
+Average path length: 14.031895857322802
+Average diameter: 36
+Average clustering coefficient: 0.06359500099549598 
+
+SUB-SPLIT INFORMATION
+Split number: 3
+Number of connected subgraphs: 647
+Number of nodes on the biggest subgraph: 1045
+Number of nodes on the second biggest subgraph: 57
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 1045
+Number of edges: 1233
+Average degree: 2.3598086124401916
+Average path length: 10.920893141945774
+Average diameter: 35
+Average clustering coefficient: 0.05464570763422178 
+
+SUB-SPLIT INFORMATION
+Split number: 4
+Number of connected subgraphs: 642
+Number of nodes on the biggest subgraph: 1169
+Number of nodes on the second biggest subgraph: 15
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 1169
+Number of edges: 1398
+Average degree: 2.391787852865697
+Average path length: 9.658785169387253
+Average diameter: 25
+Average clustering coefficient: 0.07992193231813499 
+
+SUB-SPLIT INFORMATION
+Split number: 5
+Number of connected subgraphs: 525
+Number of nodes on the biggest subgraph: 875
+Number of nodes on the second biggest subgraph: 25
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 875
+Number of edges: 1138
+Average degree: 2.601142857142857
+Average path length: 9.821120627656097
+Average diameter: 29
+Average clustering coefficient: 0.09139445546861014 
+
+Execution time: 16.317787885665894 seconds

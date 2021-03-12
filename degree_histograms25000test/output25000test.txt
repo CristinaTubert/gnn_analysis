@@ -1,0 +1,33 @@
+Max number of nodes: 25000 
+
+FIRST SPLIT INFORMATION
+Split type: test
+Number of nodes first split: 48603 
+
+SUB-SPLIT INFORMATION
+Split number: 1
+Number of connected subgraphs: 1565
+Number of nodes on the biggest subgraph: 7875
+Number of nodes on the second biggest subgraph: 18
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 7875
+Number of edges: 12075
+Average degree: 3.066666666666667
+Average path length: 8.584990779378384
+Average diameter: 35
+Average clustering coefficient: 0.10707021750806962 
+
+SUB-SPLIT INFORMATION
+Split number: 2
+Number of connected subgraphs: 1464
+Number of nodes on the biggest subgraph: 7381
+Number of nodes on the second biggest subgraph: 89
+BIGGEST CONNECTED SUBGRAPH INFORMATION
+Number of nodes: 7381
+Number of edges: 12134
+Average degree: 3.2879013683782685
+Average path length: 8.172977163588191
+Average diameter: 31
+Average clustering coefficient: 0.11275835161352989 
+
+Execution time: 159.40449285507202 seconds
