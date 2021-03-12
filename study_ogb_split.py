@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
+import time
 
 import ogb.nodeproppred as ogbn
 import torch_geometric
@@ -93,6 +94,8 @@ def extract_features(nsplit, G):
   print('Average clustering coefficient:', average_cluster_coef, '\n')
 
 ### MAIN
+start_time = time.time()
+
 arxiv = ogbn.NodePropPredDataset(name='ogbn-arxiv', root='dataset/')
 MAXNODES = int(input())
 split = str(input())
@@ -103,6 +106,8 @@ for nsplit,subG in lsubG:
   cc = biggest_connected_subraph(nsplit, subG)
   if (cc==None): break
   extract_features(nsplit,cc)
+
+print("Execution time: %s seconds" % (time.time() - start_time))
 
 
   
