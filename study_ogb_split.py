@@ -63,8 +63,11 @@ def biggest_connected_subraph(nsplit, G):
   print('Split number:', str(nsplit))
   print('Number of connected subgraphs:', len(cc))
   print('Number of nodes on the biggest subgraph:', len(cc[0]))
-  print('Number of nodes on the second biggest subgraph:', len(cc[1]))
-
+  if (len(cc)>1): 
+    print('Number of nodes on the second biggest subgraph:', len(cc[1]))
+  else:
+    print('Number of nodes on the second biggest subgraph: 0')
+    
   return cc[0]
 
 def extract_features(nsplit, G):
