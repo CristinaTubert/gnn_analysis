@@ -165,7 +165,8 @@ def node_pred_analysis(ogb, split):
     print(nodes)
     print(len(nodes))
     print(edges)
-    print(len(edges))
+    print(len(edges[0]))
+    print(len(edges[1]))
 
     G, undirected = get_nx_graph(nodes, edges)
     G = G.to_undirected()
