@@ -113,7 +113,7 @@ def analysis(ogb):
 def main():
     ogb = choose_graph_dataset()
     global NUM_GRAPHS
-    NUM_NODES = int(input('Choose NUM_GRAPHS: '))
+    NUM_GRAPHS = int(input('Choose NUM_GRAPHS: '))
     analysis(ogb)
 
 if __name__ == '__main__':
