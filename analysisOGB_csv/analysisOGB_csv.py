@@ -11,7 +11,7 @@ import torch_geometric.utils as utils
 import torch_geometric
 import torch
 
-MAX_NODES = 1000
+MAX_NODES = 10000
 
 values_dict = {}
 
@@ -147,6 +147,7 @@ def mean_dict():
 def write_csv():
   with open('results.csv', 'w', newline='') as f:
     w = csv.DictWriter(f, values_dict.keys())
+    w.writeheader()
     w.writerow(values_dict)
 
 def node_pred_analysis(ogb, split):
