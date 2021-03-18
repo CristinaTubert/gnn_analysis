@@ -115,7 +115,7 @@ def CC_processing(cc, undirected):
 
   values_dict['BCC num nodes'].append(num_nodes)
   values_dict['BCC num edges'].append(num_edges)
-  values_dict['BCC average path lenght'].append(avg_path_length)
+  values_dict['BCC average path length'].append(avg_path_length)
   values_dict['BCC diameter'].append(diameter)
   values_dict['BCC radius'].append(radius)
 
