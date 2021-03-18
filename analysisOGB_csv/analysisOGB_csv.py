@@ -56,7 +56,7 @@ def get_nx_graph(nodes, edges):
 
   edge_list = []
   for i in range(len(edges[0])):
-    edge_list.append((int(edges[0][k]), int(edges[1][k])))
+    edge_list.append((int(edges[0][i]), int(edges[1][i])))
 
   if undirected:
     G = nx.Graph()
