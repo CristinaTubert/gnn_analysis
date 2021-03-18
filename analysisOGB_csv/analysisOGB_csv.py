@@ -11,7 +11,7 @@ import torch_geometric.utils as utils
 import torch_geometric
 import torch
 
-global MAX_NODES = -1
+MAX_NODES = -1
 
 values_dict = {}
 
@@ -190,8 +190,7 @@ def main():
   
   if task == 'nodepred':
     ogb, split = choose_node_dataset()
-    MAX_NODES = int(input('Choose MAX_NODES: '))
-    print(type(MAX_NODES))
+    global MAX_NODES = int(input('Choose MAX_NODES: '))
     node_pred_analysis(ogb, split)
     
   elif task == 'graphpred':
