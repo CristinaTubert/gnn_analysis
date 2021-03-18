@@ -11,7 +11,7 @@ import torch_geometric.utils as utils
 import torch_geometric
 import torch
 
-MAX_NODES = 0
+MAX_NODES = 10000
 
 values_dict = {}
 
