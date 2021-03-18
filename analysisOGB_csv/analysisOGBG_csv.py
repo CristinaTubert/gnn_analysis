@@ -5,7 +5,7 @@ import networkx as nx
 import random as rand
 import csv
 
-import ogb.nodeproppred as ogbn
+import ogb.graphproppred as ogbg
 from torch_geometric.data import Data
 import torch_geometric.utils as utils
 import torch_geometric
@@ -18,7 +18,7 @@ values_dict = {}
 def choose_graph_dataset():
     name = input('Choose dataset node prediction [molhiv, molpcba, ppa, code]: ')
     name = 'ogbg-' + name
-    ogb = ogbn.NodePropPredDataset(name=name, root='dataset/')
+    ogb = ogbg.GraphPropPredDataset(name=name, root='dataset/')
   
     return (ogb, split)
 
@@ -87,11 +87,14 @@ def analysis(ogb):
     w = csv.writer(f)
     write_header = True
 
+    num_graphs = len(ogb)
+
     for i in range(NUM_GRAPHS):
         values_dict = {}
 
-        graph_id = rand.randint(0, len(ogb))
+        graph_id = rand.randint(0, num_graphs)
         values_dict['Dataset name'] = ogb.name
+        values_dict['Num graphs'] = num_graphs
         values_dict['Graph ID'] = graph_id
 
         ogb_graph = ogb[graph_id]
