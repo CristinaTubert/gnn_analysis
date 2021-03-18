@@ -42,6 +42,7 @@ def get_nx_graph(nodes, edges):
     return (G, undirected)
 
 def graph_processing(G, undirected):
+    time_ini = time.time()
     print('Check directed G', nx.is_directed(G))
 
     num_nodes = G.number_of_nodes()
