@@ -40,19 +40,16 @@ def first_split(ogb, split):
 
 def second_split_and_shuffle(nodes_ini, edges_ini):
   rand.shuffle(nodes_ini)
-  print(nodes_ini)
   nodes = nodes_ini[0:MAX_NODES]
-  print(nodes)
-  print(edges_ini)
+
   nodes_tensor = torch.LongTensor([x for x in nodes])
   edges_tensor = torch.LongTensor([x for x in edges_ini])
-  print(edges_tensor)
+
   edges, _ = utils.subgraph(nodes_tensor, edges_tensor)
 
   return (nodes, edges)
 
 def get_nx_graph(nodes, edges):
-  print(edges)
   undirected = utils.is_undirected(edges)
 
   edge_list = []
@@ -155,14 +152,10 @@ def node_pred_analysis(ogb, split):
   ini_dict('node', ogb.name, split)
 
   nodes_ini, edges_ini = first_split(ogb, split)
-  print(edges_ini)
-  print(nodes_ini)
-
   for i in range(5):
     time_ini = time.time()
 
     nodes, edges = second_split_and_shuffle(nodes_ini, edges_ini)
-    print(edges)
 
     values_dict['Num nodes'].append(len(nodes))
     values_dict['Num edges'].append(len(edges))
