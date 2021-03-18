@@ -39,21 +39,18 @@ def first_split(ogb, split):
     nodes_tensor = torch.LongTensor([x for x in nodes_ini])
     edges_ini, _ = utils.subgraph(nodes_tensor, edges_tensor)
 
-  return (nodes_ini, edges_ini)
+  return (nodes_tensor, edges_ini)
 
 def second_split_and_shuffle(nodes_ini, edges_ini):
   rand.shuffle(nodes_ini)
   nodes = nodes_ini[0:MAX_NODES]
 
-  edges_tensor = torch.LongTensor([x for x in edges_ini])
-  nodes_tensor = torch.LongTensor([x for x in nodes])
-  edges, _ = utils.subgraph(nodes_tensor, edges_tensor)
+  edges, _ = utils.subgraph(nodes, edges_ini)
 
   return (nodes, edges)
 
 def get_nx_graph(nodes, edges):
-  #Check if is_undirected works 
-  edges_tensor = torch.LongTensor([x for x in edges])
+  #Check if is_undirected works
   undirected = utils.is_undirected(edge_index_tensor)
   print('Es undirected:', undirected)
 
