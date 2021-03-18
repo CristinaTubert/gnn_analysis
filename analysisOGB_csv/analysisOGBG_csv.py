@@ -116,7 +116,6 @@ def analysis(ogb):
         w.writerow(values_dict.values())
 
 def main():
- 
     ogb = choose_graph_dataset()
     global NUM_GRAPHS
     NUM_NODES = int(input('Choose NUM_GRAPHS: '))
