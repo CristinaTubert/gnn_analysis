@@ -188,7 +188,7 @@ def main():
     ogb, split = choose_node_dataset()
     node_pred_analysis(ogb, split)
     
-  else if task == 'graphpred':
+  elif task == 'graphpred':
     ogb, split = choose_graph_dataset()
     graph_pred_analysis(ogb, split)
 
