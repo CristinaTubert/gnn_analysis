@@ -50,6 +50,10 @@ def second_split_and_shuffle(nodes_ini, edges_ini):
   return (nodes, edges)
 
 def get_nx_graph(nodes, edges):
+  #Check if is_undirected works
+  undirected = utils.is_undirected(edges)
+  print('Es undirected:', undirected)
+
   edge_list = []
   for i in range(len(edges[0])):
     edge_list.append((int(edges[0][i]), int(edges[1][i])))
@@ -156,6 +160,10 @@ def node_pred_analysis(ogb, split):
     values_dict['Num nodes'].append(len(nodes))
     values_dict['Num edges'].append(len(edges))
 
+    print(nodes)
+    print(edges)
+    print(type(nodes))
+    print(type(edges))
     G, undirected = get_nx_graph(nodes, edges)
 
     values_dict['Directed'] = undirected
