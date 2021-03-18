@@ -72,12 +72,12 @@ def get_nx_graph(nodes, edges):
 
 def get_biggest_CC(G, undirected):
   if undirected:
-    CC = list(nx.algorithms.components.connected_components(G))
+    CC = [G.subgraph(c).copy() for c in sorted(nx.algorithms.components.connected_components(G), key=len, reverse=True)]
   else:
-    CC = list(nx.algorithms.components.strongly_connected_components(G))
+    CC = [G.subgraph(c).copy() for c in sorted(nx.algorithms.components.strongly_connected_components(G), key=len, reverse=True)]
 
   num_CC = len(CC)
-  cc = G.subgraph(max(CC, key=len)).copy()
+  cc = CC[0]
   num_nodes = cc.number_of_nodes()
   num_edges = cc.number_of_edges()
 
