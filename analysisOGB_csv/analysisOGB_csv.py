@@ -38,7 +38,7 @@ def first_split(ogb, split):
 
     edges_tensor = torch.LongTensor([x for x in ogb[0][0]['edge_index']])
     nodes_tensor = torch.LongTensor([x for x in nodes_ini])
-    edges_ini, _ = utils.subgraph(nodes_tensor, edges_tensor)
+    edges_ini, _ = utils.subgraph(nodes_tensor, edges_tensor, num_nodes=len(nodes_ini))
 
   return (nodes_ini, edges_ini)
 
@@ -47,7 +47,7 @@ def second_split_and_shuffle(nodes_ini, edges_ini):
   nodes = nodes_ini[0:MAX_NODES]
 
   nodes_tensor = torch.LongTensor([x for x in nodes])
-  edges, _ = utils.subgraph(nodes_tensor, edges_ini)
+  edges, _ = utils.subgraph(nodes_tensor, edges_ini, num_nodes=len(nodes))
 
   return (nodes, edges)
 
