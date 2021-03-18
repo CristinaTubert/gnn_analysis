@@ -190,7 +190,8 @@ def main():
   
   if task == 'nodepred':
     ogb, split = choose_node_dataset()
-    global MAX_NODES = int(input('Choose MAX_NODES: '))
+    global MAX_NODES 
+    MAX_NODES = int(input('Choose MAX_NODES: '))
     node_pred_analysis(ogb, split)
     
   elif task == 'graphpred':
