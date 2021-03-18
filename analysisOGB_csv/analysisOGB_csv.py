@@ -174,9 +174,9 @@ def node_pred_analysis(ogb, split):
 
     CC_processing(cc, undirected)
 
-    time = time.time() - time_ini
+    time_end = time.time() - time_ini
 
-    values_dict['Execution time'].append(time)
+    values_dict['Execution time'].append(time_end)
   
   mean_dict()
   write_csv(values)
