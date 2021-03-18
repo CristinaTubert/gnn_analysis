@@ -93,10 +93,10 @@ def analysis(ogb):
         ogb_graph = ogb[graph_id]
 
         nodes = list(range(0, ogb_graph[0]['num_nodes']))
-        edges = ogb_graph[0]['edge_index']
+        edge_index = ogb_graph[0]['edge_index']
 
         nodes_tensor = torch.LongTensor([x for x in nodes])
-        edges_tensor = torch.LongTensor([x for x in edges])
+        edges_tensor = torch.LongTensor([x for x in edge_index])
         edges, _ = utils.subgraph(nodes_tensor, edges_tensor)
 
         G, undirected = get_nx_graph(nodes, edges)
