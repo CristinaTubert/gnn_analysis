@@ -74,12 +74,6 @@ def graph_processing(G, undirected):
     values_dict['Radius'] = radius
     values_dict['Execution time'] = time_end
 
-def write_csv():
-    with open('results_OGBG.csv', 'w', newline='') as f:
-        w = csv.DictWriter(f, values_dict.keys())
-        w.writeheader()
-        w.writerow(values_dict)
-
 def analysis(ogb):
     f = open('results_OGBG.csv', 'w', newline='')
     w = csv.writer(f)
@@ -111,7 +105,10 @@ def analysis(ogb):
             w.writerow(values_dict.keys())
             write_header = False
 
+        print(i)
         w.writerow(values_dict.values())
+
+    f.close()
 
 def main():
     ogb = choose_graph_dataset()
