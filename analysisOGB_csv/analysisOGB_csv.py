@@ -152,11 +152,13 @@ def node_pred_analysis(ogb, split):
   ini_dict('node', ogb.name, split)
 
   nodes_ini, edges_ini = first_split(ogb, split)
+  print(edges_ini)
 
   for i in range(5):
     time_ini = time.time()
 
     nodes, edges = second_split_and_shuffle(nodes_ini, edges_ini)
+    print(edges)
 
     values_dict['Num nodes'].append(len(nodes))
     values_dict['Num edges'].append(len(edges))
