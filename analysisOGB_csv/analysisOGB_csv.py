@@ -51,7 +51,7 @@ def second_split_and_shuffle(nodes_ini, edges_ini):
 
 def get_nx_graph(nodes, edges):
   #Check if is_undirected works
-  undirected = utils.is_undirected(edge_index_tensor)
+  undirected = utils.is_undirected(edges)
   print('Es undirected:', undirected)
 
   edge_list = []
