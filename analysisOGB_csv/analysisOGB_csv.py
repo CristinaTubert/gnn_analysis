@@ -29,7 +29,7 @@ def choose_graph_dataset():
 
 def first_split(ogb, split):
   if(split == 'no-split'):
-    nodes_ini = list(range(0, ogbDataset[0][0]['num_nodes']))
+    nodes_ini = list(range(0, ogb[0][0]['num_nodes']))
 
   else:
     split_idx = ogb.get_idx_split()
