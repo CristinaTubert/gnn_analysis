@@ -164,6 +164,8 @@ def node_pred_analysis(ogb, split):
     values_dict['Num edges'].append(len(edges))
 
     G, undirected = get_nx_graph(nodes, edges)
+    G = G.to_undirected()
+    undirected = True
 
     values_dict['Directed'] = (not undirected)
 
