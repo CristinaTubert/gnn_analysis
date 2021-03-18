@@ -146,7 +146,8 @@ def mean_dict():
 def write_csv():
   with open('results.csv', 'w', newline='') as f:
     w = csv.DictWriter(f, values_dict.keys())
-    w.writerows(values_dict)
+    print(values_dict)
+    w.writerow(values_dict)
 
 def node_pred_analysis(ogb, split):
   ini_dict('node', ogb.name, split)
@@ -160,11 +161,7 @@ def node_pred_analysis(ogb, split):
 
     values_dict['Num nodes'].append(len(nodes))
     values_dict['Num edges'].append(len(edges))
-
-    print(nodes)
-    print(edges)
-    print(type(nodes))
-    print(type(edges))
+    
     G, undirected = get_nx_graph(nodes, edges)
 
     values_dict['Directed'] = undirected
