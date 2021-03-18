@@ -40,6 +40,7 @@ def first_split(ogb, split):
 
 def second_split_and_shuffle(nodes_ini, edges_ini):
   rand.shuffle(nodes_ini)
+  print(nodes_ini)
   nodes = nodes_ini[0:MAX_NODES]
   print(nodes)
   print(edges_ini)
@@ -155,6 +156,7 @@ def node_pred_analysis(ogb, split):
 
   nodes_ini, edges_ini = first_split(ogb, split)
   print(edges_ini)
+  print(nodes_ini)
 
   for i in range(5):
     time_ini = time.time()
