@@ -11,7 +11,7 @@ import torch_geometric.utils as utils
 import torch_geometric
 import torch
 
-MAX_NODES = 10000
+MAX_NODES = 0
 
 values_dict = {}
 
@@ -159,15 +159,8 @@ def node_pred_analysis(ogb, split):
 
     values_dict['Num nodes'].append(len(nodes))
     values_dict['Num edges'].append(len(edges))
-    print(nodes)
-    print(len(nodes))
-    print(edges)
-    print(len(edges[0]))
-    print(len(edges[1]))
 
     G, undirected = get_nx_graph(nodes, edges)
-    G = G.to_undirected()
-    undirected = True
 
     values_dict['Directed'] = (not undirected)
 
@@ -190,6 +183,7 @@ def main():
   
   if task == 'nodepred':
     ogb, split = choose_node_dataset()
+    MAX_NODES = int(input('Choose MAX_NODES: '))
     node_pred_analysis(ogb, split)
     
   elif task == 'graphpred':
