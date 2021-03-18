@@ -24,9 +24,6 @@ def choose_node_dataset():
   
   return (ogb, split)
 
-def choose_graph_dataset():
-  return (None, None)
-
 def first_split(ogb, split):
   if(split == 'no-split'):
     nodes_ini = list(range(0, ogb[0][0]['num_nodes']))
@@ -119,8 +116,7 @@ def CC_processing(cc, undirected):
   values_dict['BCC diameter'].append(diameter)
   values_dict['BCC radius'].append(radius)
 
-def ini_dict(task, name, split):
-  values_dict['Task'] = task
+def ini_dict_pred(name, split):
   values_dict['Dataset name'] = name
   values_dict['Directed'] = -1
   values_dict['First split'] = split
@@ -143,18 +139,16 @@ def mean_dict():
       values_dict[key] = sum(value)/len(value)
 
 def write_csv():
-  with open('results.csv', 'w', newline='') as f:
+  with open('results_OGBN.csv', 'w', newline='') as f:
     w = csv.DictWriter(f, values_dict.keys())
     w.writeheader()
     w.writerow(values_dict)
 
-def node_pred_analysis(ogb, split):
-  ini_dict('node', ogb.name, split)
+def analysis(ogb, split):
+  ini_dict(ogb.name, split)
 
   nodes_ini, edges_ini = first_split(ogb, split)
   for i in range(5):
-    time_ini = time.time()
-
     nodes, edges = second_split_and_shuffle(nodes_ini, edges_ini)
 
     values_dict['Num nodes'].append(len(nodes))
@@ -163,6 +157,8 @@ def node_pred_analysis(ogb, split):
     G, undirected = get_nx_graph(nodes, edges)
 
     values_dict['Directed'] = (not undirected)
+
+    time_ini = time.time()
 
     graph_processing(G, undirected)
 
@@ -178,18 +174,14 @@ def node_pred_analysis(ogb, split):
   mean_dict()
   write_csv()
 
-def main():
-  task = input('Choose dataset task prediction [nodepred, graphpred]: ')
-  
-  if task == 'nodepred':
-    ogb, split = choose_node_dataset()
-    global MAX_NODES 
-    MAX_NODES = int(input('Choose MAX_NODES: '))
-    node_pred_analysis(ogb, split)
-    
-  elif task == 'graphpred':
-    ogb, split = choose_graph_dataset()
-    graph_pred_analysis(ogb, split)
 
+def main():
+  ogb, split = choose_node_dataset()
+
+  global MAX_NODES 
+  MAX_NODES = int(input('Choose MAX_NODES: '))
+  analysis(ogb, split)
+    
+ 
 if __name__ == '__main__':
   main()
