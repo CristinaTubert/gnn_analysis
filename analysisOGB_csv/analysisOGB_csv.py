@@ -166,7 +166,7 @@ def node_pred_analysis(ogb, split):
 
     graph_processing(G, undirected)
 
-    if not nx.is_connected(G):
+    if (undirected and not nx.is_connected(G)) or (not undirected and not nx.is_strongly_connected(G)):
       G = get_biggest_CC(G, undirected)
 
     CC_processing(cc, undirected)
