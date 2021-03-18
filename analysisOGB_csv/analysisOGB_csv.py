@@ -143,7 +143,7 @@ def mean_dict():
     if type(value) == list:
       values_dict[key] = sum(value)/len(value)
 
-def write_csv(values):
+def write_csv():
   with open('results.csv', 'w', newline='') as f:
     w = csv.DictWriter(f, values_dict.keys())
     w.writerows(values_dict)
@@ -181,7 +181,7 @@ def node_pred_analysis(ogb, split):
     values_dict['Execution time'].append(time_end)
   
   mean_dict()
-  write_csv(values)
+  write_csv()
 
 def main():
   task = input('Choose dataset task prediction: [nodepred, graphpred]')
