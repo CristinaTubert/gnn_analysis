@@ -17,7 +17,7 @@ values_dict = {}
 
 def choose_node_dataset():
   name = input('Choose dataset node prediction [arxiv, products, proteins, mag, papers100M]: ')
-  name = 'ogb-n' + name
+  name = 'ogbn-' + name
   ogb = ogbn.NodePropPredDataset(name=name, root='dataset/')
 
   split = input('Choose dataset split [train, valid, test, no-split]: ')
