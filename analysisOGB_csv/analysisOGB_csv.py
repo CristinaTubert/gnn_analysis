@@ -192,5 +192,5 @@ def main():
     ogb, split = choose_graph_dataset()
     graph_pred_analysis(ogb, split)
 
-if __main__ == '__main__':
+if __name__ == '__main__':
   main()
