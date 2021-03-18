@@ -30,16 +30,12 @@ def choose_graph_dataset():
 def first_split(ogb, split):
   if(split == 'no-split'):
     nodes_ini = list(range(0, ogbDataset[0][0]['num_nodes']))
-    edges_ini = ogb[0][0]['edge_index']
 
   else:
     split_idx = ogb.get_idx_split()
     nodes_ini = split_idx[split]
 
-    edges_tensor = torch.LongTensor([x for x in ogb[0][0]['edge_index']])
-    nodes_tensor = torch.LongTensor([x for x in nodes_ini])
-    edges_ini, _ = utils.subgraph(nodes_tensor, edges_tensor, num_nodes=len(nodes_ini))
-
+  edges_ini = ogb[0][0]['edge_index']
   return (nodes_ini, edges_ini)
 
 def second_split_and_shuffle(nodes_ini, edges_ini):
@@ -47,7 +43,8 @@ def second_split_and_shuffle(nodes_ini, edges_ini):
   nodes = nodes_ini[0:MAX_NODES]
 
   nodes_tensor = torch.LongTensor([x for x in nodes])
-  edges, _ = utils.subgraph(nodes_tensor, edges_ini, num_nodes=len(nodes))
+  edges_tensor = torch.LongTensor([x for x in edges_ini])
+  edges, _ = utils.subgraph(nodes_tensor, edges_tensor)
 
   return (nodes, edges)
 
