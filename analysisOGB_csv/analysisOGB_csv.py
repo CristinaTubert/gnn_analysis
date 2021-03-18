@@ -88,7 +88,7 @@ def get_biggest_CC(G, undirected):
   return cc
 
 def graph_processing(G, undirected):
-  print('Comprobacion undirected G', nx.is_undirected(G))
+  print('Comprobacion undirected G', nx.is_directed(G))
   num_nodes = G.number_of_nodes()
   num_edges = G.number_of_edges()
 
