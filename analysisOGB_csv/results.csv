@@ -1,2 +1,2 @@
 Task,Dataset name,Directed,First split,Num nodes,Num edges,Average degree,Average clustering,Density,Num CC,BCC num nodes,BCC num edges,BCC average path length,BCC diameter,BCC radius,Execution time
-node,ogbn-arxiv,False,test,10000.0,1277.2,0.51048,0.016943682592012763,5.1053105310531055e-05,7748.8,1046.0,1282.8,10.145814099030334,28.0,14.8,2.910188007354736
+node,ogbn-arxiv,True,test,10000.0,1263.8,0.50512,0.008097731963000497,2.525852585258526e-05,9969.0,3.8,6.2,1.4333333333333331,2.2,1.0,0.4436241626739502
