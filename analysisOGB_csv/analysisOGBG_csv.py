@@ -20,7 +20,7 @@ def choose_graph_dataset():
     name = 'ogbg-' + name
     ogb = ogbg.GraphPropPredDataset(name=name, root='dataset/')
   
-    return (ogb, split)
+    return ogb
 
 def get_nx_graph(nodes, edges):
     undirected = utils.is_undirected(edges)
@@ -43,8 +43,6 @@ def get_nx_graph(nodes, edges):
 
 def graph_processing(G, undirected):
     print('Check directed G', nx.is_directed(G))
-
-    ini_dict(ogb.name, split)
 
     num_nodes = G.number_of_nodes()
     num_edges = G.number_of_edges()
