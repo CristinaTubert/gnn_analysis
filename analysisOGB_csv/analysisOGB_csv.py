@@ -88,7 +88,7 @@ def get_biggest_CC(G, undirected):
   return cc
 
 def graph_processing(G, undirected):
-  print('Comprobacion undirected G', nx.is_directed(G))
+  print('Check directed G', nx.is_directed(G))
   num_nodes = G.number_of_nodes()
   num_edges = G.number_of_edges()
 
@@ -107,7 +107,7 @@ def graph_processing(G, undirected):
   values_dict['Density'].append(density)
 
 def CC_processing(cc, undirected):
-  print('Comprobacion undirected cc', nx.is_undirected(cc))
+  print('Check directed cc', nx.is_directed(cc))
   num_nodes = cc.number_of_nodes()
   num_edges = cc.number_of_edges()
 
