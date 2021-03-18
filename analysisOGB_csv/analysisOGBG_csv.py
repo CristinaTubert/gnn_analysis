@@ -55,11 +55,11 @@ def graph_processing(G, undirected):
 
     density = nx.density(G)
 
-    avg_path_length = nx.average_shortest_path_length(cc)
+    avg_path_length = nx.average_shortest_path_length(G)
 
-    diameter = nx.diameter(cc)
+    diameter = nx.diameter(G)
 
-    radius = nx.radius(cc)
+    radius = nx.radius(G)
 
     time_end = time.time() - time_ini
 
