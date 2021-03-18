@@ -16,11 +16,11 @@ MAX_NODES = 1000
 values_dict = {}
 
 def choose_node_dataset():
-  name = input('Choose dataset node prediction: [arxiv, products, proteins, mag, papers100M]: ')
-  name = 'ogb-' + name
+  name = input('Choose dataset node prediction [arxiv, products, proteins, mag, papers100M]: ')
+  name = 'ogb-n' + name
   ogb = ogbn.NodePropPredDataset(name=name, root='dataset/')
 
-  split = input('Choose dataset split: [train, valid, test, no-split]: ')
+  split = input('Choose dataset split [train, valid, test, no-split]: ')
   
   return (ogb, split)
 
@@ -181,7 +181,7 @@ def node_pred_analysis(ogb, split):
   write_csv()
 
 def main():
-  task = input('Choose dataset task prediction: [nodepred, graphpred]: ')
+  task = input('Choose dataset task prediction [nodepred, graphpred]: ')
   
   if task == 'nodepred':
     ogb, split = choose_node_dataset()
