@@ -16,10 +16,11 @@ MAX_NODES = 1000
 values_dict = {}
 
 def choose_node_dataset():
-  name = input('Choose dataset node prediction: [ogbn-arxiv, ogbn-products, ogbn-proteins, ogbn-mag, ogbn-papers100M]')
+  name = input('Choose dataset node prediction: [arxiv, products, proteins, mag, papers100M]: ')
+  name = 'ogb-' + name
   ogb = ogbn.NodePropPredDataset(name=name, root='dataset/')
 
-  split = input('Choose dataset split: [train, valid, test, no-split]')
+  split = input('Choose dataset split: [train, valid, test, no-split]: ')
   
   return (ogb, split)
 
@@ -51,9 +52,7 @@ def second_split_and_shuffle(nodes_ini, edges_ini):
   return (nodes, edges)
 
 def get_nx_graph(nodes, edges):
-  #Check if is_undirected works
   undirected = utils.is_undirected(edges)
-  print('Es undirected:', undirected)
 
   edge_list = []
   for i in range(len(edges[0])):
@@ -89,6 +88,7 @@ def get_biggest_CC(G, undirected):
   return cc
 
 def graph_processing(G, undirected):
+  print('Comprobacion undirected G', nx.is_undirected(G))
   num_nodes = G.number_of_nodes()
   num_edges = G.number_of_edges()
 
@@ -107,6 +107,7 @@ def graph_processing(G, undirected):
   values_dict['Density'].append(density)
 
 def CC_processing(cc, undirected):
+  print('Comprobacion undirected cc', nx.is_undirected(cc))
   num_nodes = cc.number_of_nodes()
   num_edges = cc.number_of_edges()
 
@@ -146,7 +147,6 @@ def mean_dict():
 def write_csv():
   with open('results.csv', 'w', newline='') as f:
     w = csv.DictWriter(f, values_dict.keys())
-    print(values_dict)
     w.writerow(values_dict)
 
 def node_pred_analysis(ogb, split):
@@ -161,10 +161,10 @@ def node_pred_analysis(ogb, split):
 
     values_dict['Num nodes'].append(len(nodes))
     values_dict['Num edges'].append(len(edges))
-    
+
     G, undirected = get_nx_graph(nodes, edges)
 
-    values_dict['Directed'] = undirected
+    values_dict['Directed'] = (not undirected)
 
     graph_processing(G, undirected)
 
@@ -181,7 +181,7 @@ def node_pred_analysis(ogb, split):
   write_csv()
 
 def main():
-  task = input('Choose dataset task prediction: [nodepred, graphpred]')
+  task = input('Choose dataset task prediction: [nodepred, graphpred]: ')
   
   if task == 'nodepred':
     ogb, split = choose_node_dataset()
