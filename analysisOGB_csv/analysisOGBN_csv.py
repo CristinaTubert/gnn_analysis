@@ -42,7 +42,7 @@ def second_split_and_shuffle(nodes_ini, edges_ini):
   nodes_tensor = torch.LongTensor([x for x in nodes])
   edges_tensor = torch.LongTensor([x for x in edges_ini])
 
-  edges, _ = utils.subgraph(nodes_tensor, edges_tensor)
+  edges, _ = utils.subgraph(nodes_tensor, edges_tensor, num_nodes=len(nodes))
 
   return (nodes, edges)
 

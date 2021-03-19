@@ -112,7 +112,7 @@ def analysis(ogb):
 
         nodes_tensor = torch.LongTensor([x for x in nodes])
         edges_tensor = torch.LongTensor([x for x in edge_index])
-        edges, _ = utils.subgraph(nodes_tensor, edges_tensor)
+        edges, _ = utils.subgraph(nodes_tensor, edges_tensor, num_nodes=len(nodes))
 
         G, undirected = get_nx_graph(nodes, edges)
 
