@@ -158,10 +158,7 @@ def analysis(ogb, split):
     time_ini = time.time()
 
     graph_processing(G, undirected)
-
-    if (undirected and not nx.is_connected(G)) or (not undirected and not nx.is_strongly_connected(G)):
-      cc = get_biggest_CC(G, undirected)
-
+    cc = get_biggest_CC(G, undirected)
     CC_processing(cc, undirected)
 
     time_end = time.time() - time_ini
