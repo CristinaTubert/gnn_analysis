@@ -83,8 +83,6 @@ def analysis(ogb):
     num_graphs = len(ogb)
 
     for i in range(NUM_GRAPHS):
-        values_dict = {}
-
         graph_id = rand.randint(0, num_graphs)
         values_dict['Dataset name'] = ogb.name
         values_dict['Num graphs'] = num_graphs
