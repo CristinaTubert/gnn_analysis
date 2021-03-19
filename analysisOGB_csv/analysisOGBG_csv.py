@@ -41,10 +41,25 @@ def get_nx_graph(nodes, edges):
 
     return (G, undirected)
 
-def graph_processing(G, undirected):
-    time_ini = time.time()
-    print('Check directed G', nx.is_directed(G))
+def get_biggest_CC(G, undirected):
+    if undirected:
+        CC = [G.subgraph(c).copy() for c in sorted(nx.algorithms.components.connected_components(G), key=len, reverse=True)]
+    else:
+        CC = [G.subgraph(c).copy() for c in sorted(nx.algorithms.components.strongly_connected_components(G), key=len, reverse=True)]
 
+    num_CC = len(CC)
+    cc = CC[0]
+    num_nodes = cc.number_of_nodes()
+    num_edges = cc.number_of_edges()
+
+    values_dict['Num CC'] = num_CC
+    values_dict['BCC num nodes'] = num_nodes
+    values_dict['BCC num edges'] = num_edges
+
+    return cc
+
+def graph_processing(G, undirected):
+    print('Check directed G', nx.is_directed(G))
     num_nodes = G.number_of_nodes()
     num_edges = G.number_of_edges()
 
@@ -56,24 +71,26 @@ def graph_processing(G, undirected):
 
     density = nx.density(G)
 
-    avg_path_length = nx.average_shortest_path_length(G)
-
-    diameter = nx.diameter(G)
-
-    radius = nx.radius(G)
-
-    time_end = time.time() - time_ini
-
-    values_dict['Directed'] = (not undirected)
     values_dict['Num nodes'] = num_nodes
     values_dict['Num edges'] = num_edges
     values_dict['Average degree'] = avg_degree
     values_dict['Average clustering'] = avg_clustering
     values_dict['Density'] = density
-    values_dict['Average path length'] = avg_path_length
-    values_dict['Diameter'] = diameter
-    values_dict['Radius'] = radius
-    values_dict['Execution time'] = time_end
+
+def CC_processing(cc, undirected):
+    print('Check directed cc', nx.is_directed(cc))
+    num_nodes = cc.number_of_nodes()
+    num_edges = cc.number_of_edges()
+
+    avg_path_length = nx.average_shortest_path_length(cc)
+    diameter = nx.diameter(cc)
+    radius = nx.radius(cc)
+
+    values_dict['BCC num nodes'] = num_nodes
+    values_dict['BCC num edges'] = num_edges
+    values_dict['BCC average path length'] = avg_path_length
+    values_dict['BCC diameter'] = diameter
+    values_dict['BCC radius'] = radius
 
 def analysis(ogb):
     f = open('results_OGBG.csv', 'w', newline='')
@@ -98,7 +115,21 @@ def analysis(ogb):
         edges, _ = utils.subgraph(nodes_tensor, edges_tensor)
 
         G, undirected = get_nx_graph(nodes, edges)
+
+        values_dict['Directed'] = (not undirected)
+
+        time_ini = time.time()
+
         graph_processing(G, undirected)
+
+        if (undirected and not nx.is_connected(G)) or (not undirected and not nx.is_strongly_connected(G)):
+            cc = get_biggest_CC(G, undirected)
+
+        CC_processing(cc, undirected)
+
+        time_end = time.time() - time_ini
+
+        values_dict['Execution time'] = time_end
 
         if write_header:
             w.writerow(values_dict.keys())

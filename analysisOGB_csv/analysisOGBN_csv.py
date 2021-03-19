@@ -151,9 +151,6 @@ def analysis(ogb, split):
   for i in range(5):
     nodes, edges = second_split_and_shuffle(nodes_ini, edges_ini)
 
-    values_dict['Num nodes'].append(len(nodes))
-    values_dict['Num edges'].append(len(edges))
-
     G, undirected = get_nx_graph(nodes, edges)
 
     values_dict['Directed'] = (not undirected)
