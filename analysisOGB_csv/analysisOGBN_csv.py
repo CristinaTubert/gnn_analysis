@@ -42,7 +42,7 @@ def second_split_and_shuffle(nodes_ini, edges_ini):
   nodes_tensor = torch.LongTensor([x for x in nodes])
   edges_tensor = torch.LongTensor([x for x in edges_ini])
 
-  edges, _ = utils.subgraph(nodes_tensor, edges_tensor, num_nodes=len(nodes))
+  edges, _ = utils.subgraph(nodes_tensor, edges_tensor, num_nodes=len(nodes_ini))
 
   return (nodes, edges)
 
@@ -116,7 +116,7 @@ def CC_processing(cc, undirected):
   values_dict['BCC diameter'].append(diameter)
   values_dict['BCC radius'].append(radius)
 
-def ini_dict_pred(name, split):
+def ini_dict(name, split):
   values_dict['Dataset name'] = name
   values_dict['Directed'] = -1
   values_dict['First split'] = split
@@ -149,6 +149,7 @@ def analysis(ogb, split):
 
   nodes_ini, edges_ini = first_split(ogb, split)
   for i in range(5):
+    print('hola')
     nodes, edges = second_split_and_shuffle(nodes_ini, edges_ini)
 
     G, undirected = get_nx_graph(nodes, edges)
