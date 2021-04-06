@@ -1,2 +1,0 @@
-Dataset name,Directed,First split,Num nodes,Num edges,Average degree,Average clustering,Density,Num CC,BCC num nodes,BCC num edges,BCC average path length,BCC diameter,BCC radius,Execution time
-ogbn-proteins,False,no-split,10000.0,225794.4,45.158879999999996,0.25612756078962484,0.004516339633963397,379.0,9614.8,225787.0,3.455038514438803,9.4,5.0,824.8838167190552

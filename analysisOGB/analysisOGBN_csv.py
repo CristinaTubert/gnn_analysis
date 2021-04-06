@@ -12,6 +12,8 @@ import torch_geometric
 import torch
 
 MAX_NODES = -1
+TYPE_SPLIT = ''
+TYPE_EXCEL = ''
 
 values_dict = {}
 
@@ -35,9 +37,14 @@ def first_split(ogb, split):
   edges_ini = ogb[0][0]['edge_index']
   return (nodes_ini, edges_ini)
 
-def second_split_and_shuffle(nodes_ini, edges_ini):
-  rand.shuffle(nodes_ini)
-  nodes = nodes_ini[0:MAX_NODES]
+def second_split_and_shuffle(nodes_ini, edges_ini, i):
+  if TYPE_SPLIT == 'random':
+    rand.shuffle(nodes_ini)
+    nodes = nodes_ini[0:MAX_NODES]
+
+  elif TYPE_SPLIT == 'ordered':
+    j = min( (i+MAX_NODES), len(nodes_ini) )
+    nodes = nodes_ini[i:j]
 
   nodes_tensor = torch.LongTensor([x for x in nodes])
   edges_tensor = torch.LongTensor([x for x in edges_ini])
@@ -109,12 +116,17 @@ def CC_processing(cc, undirected):
   avg_path_length = nx.average_shortest_path_length(cc)
   diameter = nx.diameter(cc)
   radius = nx.radius(cc)
+  node_connectivity = nx.algorithms.connectivity.connectivity.node_connectivity(cc)
+  edge_connectivity = nx.algorithms.connectivity.connectivity.edge_connectivity(cc)
 
   values_dict['BCC num nodes'].append(num_nodes)
+  print(num_nodes, num_edges)
   values_dict['BCC num edges'].append(num_edges)
   values_dict['BCC average path length'].append(avg_path_length)
   values_dict['BCC diameter'].append(diameter)
   values_dict['BCC radius'].append(radius)
+  values_dict['BCC node connectivity'].append(node_connectivity)
+  values_dict['BCC edge connectivity'].append(edge_connectivity)
 
 def ini_dict(name, split):
   values_dict['Dataset name'] = name
@@ -131,12 +143,32 @@ def ini_dict(name, split):
   values_dict['BCC average path length'] = []
   values_dict['BCC diameter'] = []
   values_dict['BCC radius'] = []
+  values_dict['BCC node connectivity'] = []
+  values_dict['BCC edge connectivity'] = []
   values_dict['Execution time'] = []
 
 def mean_dict():
   for key,value in values_dict.items():
     if type(value) == list:
       values_dict[key] = sum(value)/len(value)
+
+def get_subdict(i):
+  subdict = {}
+  for key,value in values_dict.items():
+    if type(value) == list:
+      value = value[i]
+    subdict[key] = value
+  return subdict
+
+def write_csv_all():
+  with open('results_OGBN.csv', 'w', newline='') as f:
+    w = csv.DictWriter(f, values_dict.keys())
+    w.writeheader()
+    lim = len(values_dict['Execution time'])
+    for i in range(lim):
+      subdict = get_subdict(i)
+      print(subdict)
+      w.writerow(subdict)
 
 def write_csv():
   with open('results_OGBN.csv', 'w', newline='') as f:
@@ -148,9 +180,17 @@ def analysis(ogb, split):
   ini_dict(ogb.name, split)
 
   nodes_ini, edges_ini = first_split(ogb, split)
-  for i in range(5):
-    print('hola')
-    nodes, edges = second_split_and_shuffle(nodes_ini, edges_ini)
+
+  if TYPE_SPLIT == 'random':
+    lim = 5
+    step = 1
+
+  elif TYPE_SPLIT == 'ordered':
+    lim = len(nodes_ini)
+    step = MAX_NODES
+
+  for i in range(0, lim, step):
+    nodes, edges = second_split_and_shuffle(nodes_ini, edges_ini, i)
 
     G, undirected = get_nx_graph(nodes, edges)
 
@@ -166,15 +206,22 @@ def analysis(ogb, split):
 
     values_dict['Execution time'].append(time_end)
   
-  mean_dict()
-  write_csv()
+  if TYPE_EXCEL == 'mean':
+    mean_dict()
+    write_csv()
 
+  elif TYPE_EXCEL == 'all':
+    write_csv_all()
 
 def main():
   ogb, split = choose_node_dataset()
 
   global MAX_NODES 
   MAX_NODES = int(input('Choose MAX_NODES: '))
+  global TYPE_SPLIT
+  TYPE_SPLIT = input('Choose TYPE_SPLIT [random, ordered]: ')
+  global TYPE_EXCEL
+  TYPE_EXCEL = input('Choose TYPE_EXCEL [mean, all]: ')
   analysis(ogb, split)
     
  
