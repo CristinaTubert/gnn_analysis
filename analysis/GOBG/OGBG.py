@@ -18,7 +18,7 @@ values_dict = {}
 def choose_graph_dataset():
     name = input('Choose dataset node prediction [molhiv, molpcba, ppa, code]: ')
     name = 'ogbg-' + name
-    ogb = ogbg.GraphPropPredDataset(name=name, root='dataset/')
+    ogb = ogbg.GraphPropPredDataset(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
   
     return ogb
 

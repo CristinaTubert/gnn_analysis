@@ -1,0 +1,2 @@
+Dataset name,Directed,First split,Num nodes,Num edges,Average degree,Average clustering,Density,Num CC,BCC num nodes,BCC num edges,BCC average path length,BCC diameter,BCC radius,BCC node connectivity,BCC edge connectivity,Execution time
+Cora,True,no-split,2708.0,10556.0,7.796159527326441,0.24067329850193725,0.0014399999126942077,78.0,2485.0,10138.0,6.310998681298742,19.0,10.0,1.0,1.0,44.163940620422366
