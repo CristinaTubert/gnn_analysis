@@ -4,16 +4,10 @@ import numpy as np
 import networkx as nx
 import random as rand
 import csv
+import scipy.io
+import matplotlib.pyplot as plt
 import os.path
 #import cugraph as cnx
-
-import ogb.nodeproppred as ogbn
-from torch_geometric.data import Data
-import torch_geometric.utils as utils
-import torch_geometric
-import torch
-
-from torch_geometric.datasets import Planetoid
 
 MAX_NODES = -1
 TYPE_SPLIT = ''
@@ -21,23 +15,22 @@ TYPE_EXCEL = ''
 
 values_dict = {}
 
-def choose_dataset():
-  data = input('Choose data [OGB, Plan]: ')
+def mat_to_nx():
+  name = input('Choose matrix name : ')
+  path = 'datasets/' + name + '.mat'
+  mat = scipy.io.loadmat(path)
+  mat = mat['Problem']
 
-  if data == 'OGB':
-    name = input('Choose OGB dataset node prediction [arxiv, products, proteins, mag, papers100M]: ')
-    name = 'ogbn-' + name
-    dataset = ogbn.NodePropPredDataset(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
-    fsplit = input('Choose dataset first split [train, valid, test, no-split]: ')
+  for el in mat[0][0]:
+    if type(el) == scipy.sparse.csc.csc_matrix:
+      break
 
-  elif data == 'Plan':
-    name = input('Choose Planetoid dataset [Cora, CiteSeer]: ')
-    dataset = Planetoid(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
-    fslpit = 'no-split'
+  matrix = el.toarray()
+  G = nx.convert_matrix.from_numpy_matrix(matrix)
 
-  ini_dict(name, fsplit)
+  ini_dict(name)
   
-  return (data, dataset, fsplit)
+  return G
 
 def choose_globals(num_nodes):
   global MAX_NODES 
@@ -50,40 +43,9 @@ def choose_globals(num_nodes):
   global TYPE_SPLIT
   TYPE_SPLIT = input('Choose TYPE_SPLIT [random, ordered]: ')
 
-def first_split(data, dataset, fsplit):
-  if data == 'OGB':
+def split(G, i):
+  nodes_ini = list(range(0, G.number_of_nodes()))
 
-    if fsplit == 'no-split':
-      nodes_ini = list(range(0, dataset[0][0]['num_nodes']))
-    else:
-      split_idx = dataset.get_idx_split()
-      nodes_ini = split_idx[fsplit]
-
-    edges_ini = dataset[0][0]['edge_index']
-
-  elif data == 'Plan':
-      nodes_ini = list(range(0, len(dataset[0].y)))
-      edges_ini = -1
-
-  return (nodes_ini, edges_ini)
-
-def second_split(nodes_ini, edges_ini, i):
-  if TYPE_SPLIT == 'random':
-    rand.shuffle(nodes_ini)
-    nodes = nodes_ini[0:MAX_NODES]
-
-  elif TYPE_SPLIT == 'ordered':
-    j = min( (i+MAX_NODES), len(nodes_ini) )
-    nodes = nodes_ini[i:j]
-
-  nodes_tensor = torch.LongTensor([x for x in nodes])
-  edges_tensor = torch.LongTensor([x for x in edges_ini])
-
-  edges, _ = utils.subgraph(nodes_tensor, edges_tensor, num_nodes=len(nodes_ini))
-
-  return (nodes, edges)
-
-def second_split_planetoid(nodes_ini, G, i):
   if TYPE_SPLIT == 'random':
     rand.shuffle(nodes_ini)
     nodes = nodes_ini[0:MAX_NODES]
@@ -93,34 +55,22 @@ def second_split_planetoid(nodes_ini, G, i):
     nodes = nodes_ini[i:j]
 
   subG = G.subgraph(nodes)
-  return subG
+  undirected = not nx.is_directed(subG)
 
-def OGB_to_nx(nodes, edges):
-  undirected = utils.is_undirected(edges)
+  return subG, undirected
 
-  edge_list = []
-  for i in range(len(edges[0])):
-    edge_list.append((int(edges[0][i]), int(edges[1][i])))
-
+def get_biggest_CC(G, undirected):
   if undirected:
-    G = nx.Graph()
-    G.add_nodes_from(nodes)
-    G.add_edges_from(edge_list)
-
+    CC = [G.subgraph(c).copy() for c in sorted(nx.algorithms.components.connected_components(G), key=len, reverse=True)]
   else:
-    G = nx.DiGraph()
-    G.add_nodes_from(nodes)
-    G.add_edges_from(edge_list)
+    CC = [G.subgraph(c).copy() for c in sorted(nx.algorithms.components.strongly_connected_components(G), key=len, reverse=True)]
 
-  return (G, undirected)
+  num_CC = len(CC)
+  cc = CC[0]
+  
+  values_dict['Num CC'].append(num_CC)
 
-def planetoid_to_nx(dataset):
-  D = Data(dataset[0].x, dataset[0].edge_index, dataset[0].y)
-  G = utils.to_networkx(D)
-
-  undirected = not nx.is_directed(G)
-
-  return G, undirected
+  return cc
 
 def graph_processing(G, undirected):
   num_nodes = G.number_of_nodes()
@@ -140,19 +90,6 @@ def graph_processing(G, undirected):
   values_dict['Average clustering'].append(avg_clustering)
   values_dict['Density'].append(density)
 
-def get_biggest_CC(G, undirected):
-  if undirected:
-    CC = [G.subgraph(c).copy() for c in sorted(nx.algorithms.components.connected_components(G), key=len, reverse=True)]
-  else:
-    CC = [G.subgraph(c).copy() for c in sorted(nx.algorithms.components.strongly_connected_components(G), key=len, reverse=True)]
-
-  num_CC = len(CC)
-  cc = CC[0]
-
-  values_dict['Num CC'].append(num_CC)
-
-  return cc
-
 def CC_processing(cc, undirected):
   num_nodes = cc.number_of_nodes()
   num_edges = cc.number_of_edges()
@@ -171,10 +108,9 @@ def CC_processing(cc, undirected):
   values_dict['BCC node connectivity'].append(node_connectivity)
   values_dict['BCC edge connectivity'].append(edge_connectivity)
 
-def ini_dict(name, fsplit):
+def ini_dict(name):
   values_dict['Dataset name'] = name
   values_dict['Directed'] = -1
-  values_dict['First split'] = fsplit
   values_dict['Num nodes'] = []
   values_dict['Num edges'] = []
   values_dict['Average degree'] = []
@@ -214,7 +150,6 @@ def write_csv_all():
       lim = len(values_dict['Execution time'])
       for i in range(lim):
         subdict = get_subdict(i)
-        print(subdict)
         w.writerow(subdict)
   else:
     with open(path, 'w', newline='') as f:
@@ -223,7 +158,6 @@ def write_csv_all():
       lim = len(values_dict['Execution time'])
       for i in range(lim):
         subdict = get_subdict(i)
-        print(subdict)
         w.writerow(subdict)
 
 def write_csv_mean():
@@ -240,14 +174,9 @@ def write_csv_mean():
       w.writeheader()
       w.writerow(values_dict)
 
-def graph_to_characterization(data, dataset, nodes_ini, edges_ini, i):
-  if data == 'OGB':
-    nodes, edges = second_split(nodes_ini, edges_ini, i)
-    G, undirected = OGB_to_nx(nodes, edges)
 
-  elif data == 'Plan':
-    preG, undirected = planetoid_to_nx(dataset)
-    G = second_split_planetoid(nodes_ini, preG, i)
+def graph_to_characterization(preG, i):
+  G, undirected = split(preG, i)
 
   values_dict['Directed'] = (not undirected)
 
@@ -261,9 +190,8 @@ def graph_to_characterization(data, dataset, nodes_ini, edges_ini, i):
 
   values_dict['Execution time'].append(time_end)
 
-def analysis(data, dataset, fsplit):
-  nodes_ini, edges_ini = first_split(data, dataset, fsplit) 
-  choose_globals(len(nodes_ini))
+def analysis(G):
+  choose_globals(G.number_of_nodes())
 
   if TYPE_SPLIT == 'random': 
     lim = int(input('Choose number of iterations for random splits: '))
@@ -276,7 +204,8 @@ def analysis(data, dataset, fsplit):
     values_dict['Type split'] = 'ordered'
     
   for i in range(0, lim, step):
-    graph_to_characterization(data, dataset, nodes_ini, edges_ini, i)
+    print(i)
+    graph_to_characterization(G, i)
   
   if TYPE_EXCEL == 'mean':
     mean_dict()
@@ -285,25 +214,20 @@ def analysis(data, dataset, fsplit):
     write_csv_all()
 
 def main():
-  data, dataset, fsplit = choose_dataset()
-  analysis(data, dataset, fsplit)
+  G = mat_to_nx()
+  analysis(G)
 
-def test():
-    dataset = Planetoid(name='Cora', root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
-    print(utils.homophily_ratio(dataset[0].edge_index, dataset[0].y))
-    D = Data(dataset[0].x, dataset[0].edge_index, dataset[0].y)
-    print(dataset[0])
-    G = utils.to_networkx(D)
-    print(G.number_of_nodes())
+def explore():
+  name = 'mhd1280b'
+  path = 'datasets/' + name + '.mat'
+  mat = scipy.io.loadmat(path)
+  print(mat)
+  print('\n')
+  mat = mat['Problem']
+  print(mat)
+  for el in mat[0][0]:
+    print(el)
 
-    name = input('Choose OGB dataset node prediction [arxiv, products, proteins, mag, papers100M]: ')
-    name = 'ogbn-' + name
-    dataset = ogbn.NodePropPredDataset(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
-    #print(dataset[0])
-
-    edges_tensor = torch.LongTensor([x for x in dataset[0][0]['edge_index']])
-    m = torch.LongTensor([x for x in dataset[0][1]])
-    print(utils.homophily_ratio(edges_tensor, m))
  
 if __name__ == '__main__':
   main()

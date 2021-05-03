@@ -1,0 +1,4 @@
+Dataset name,Directed,First split,Num nodes,Num edges,Average degree,Average clustering,Density,Num CC,BCC num nodes,BCC num edges,BCC average path length,BCC diameter,BCC radius,BCC node connectivity,BCC edge connectivity,Execution time,Type split
+ogbn-arxiv,True,no-split,50000.0,104334.6,4.173384,0.06907826010773804,4.1734674693493874e-05,49217.4,25.4,77.2,3.7344516281546354,8.8,4.0,1.0,1.0,2.647370719909668,5 random iterations
+ogbn-products,False,no-split,10000.0,1053.2,0.21064,0.008631360273060273,2.1066106610661066e-05,8994.8,30.4,34.2,3.6632333833083464,7.4,3.8,1.0,1.0,0.24990172386169435,5 random iterations
+ogbn-products,False,no-split,50000.0,25441.0,1.01764,0.06822404605496114,2.0353207064141285e-05,30592.8,13454.2,18602.0,16.37402621816161,50.8,27.0,1.0,1.0,1258.1467244148255,5 random iterations

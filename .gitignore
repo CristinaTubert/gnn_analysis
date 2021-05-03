@@ -1,5 +1,6 @@
 # my ignores
 analysis/datasets/
+analysis/matrix_collection/datasets/
 old/
 
 # Byte-compiled / optimized / DLL files
