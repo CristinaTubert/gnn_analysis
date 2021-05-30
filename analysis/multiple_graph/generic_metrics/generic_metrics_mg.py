@@ -27,7 +27,7 @@ METRICS_RESULTS = ''
 values_dict = {}
 
 def choose_dataset():
-    name = input('Choose dataset node prediction [molhiv, molpcba, ppa, code]: ')
+    name = input('Choose dataset graph prediction [molhiv, molpcba, ppa, code]: ')
     name = 'ogbg-' + name
     dataset = ogbg.GraphPropPredDataset(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
     fsplit = input('Choose dataset first split [train, valid, test, no-split]: ')
