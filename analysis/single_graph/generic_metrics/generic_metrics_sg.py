@@ -562,21 +562,28 @@ def main():
 #   return (nodes, edges)
 
 def test():
+  '''
   dataset = Planetoid(name='Cora', root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
   print(utils.homophily_ratio(dataset[0].edge_index, dataset[0].y))
   D = Data(dataset[0].x, dataset[0].edge_index, dataset[0].y)
   print(dataset[0])
   G = utils.to_networkx(D)
-  print(G.number_of_nodes())
+  print(G.number_of_nodes())'''
 
   name = input('Choose OGB dataset node prediction [arxiv, products, proteins, mag, papers100M]: ')
   name = 'ogbn-' + name
   dataset = ogbn.NodePropPredDataset(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
-  #print(dataset[0])
-
+  print(type(dataset))
+  print(type(dataset[0]))
+  print(dataset[0])
+  for d in dataset[0]:
+    print(type(d))
+    print(d)
+    print('\n')
+'''
   edges_tensor = torch.LongTensor([x for x in dataset[0][0]['edge_index']])
   m = torch.LongTensor([x for x in dataset[0][1]])
   print(utils.homophily_ratio(edges_tensor, m))
-
+'''
 if __name__ == '__main__':
-  main()
+  test()
