@@ -92,11 +92,16 @@ def second_split(G_all, nodes_ini, i):
     nodes = nodes_ini[i:j]
 
   G = G_all.subgraph(nodes)
+  print(type(G))
   return G, nodes
 
-def OGB_to_nx(nodes_ini, edges_ini):
+def OGB_to_nx(fsplit, nodes_ini, edges_ini):
   edges_tensor = torch.LongTensor([x for x in edges_ini])
   undirected = utils.is_undirected(edges_tensor)
+
+  if (fsplit != 'no-split'):
+    nodes_tensor = torch.LongTensor([x for x in nodes_ini])
+    edges_ini, _ = utils.subgraph(nodes_tensor, edges_tensor)
 
   edge_list = []
   for i in range(len(edges_ini[0])):
@@ -516,7 +521,7 @@ def split_control(name, data, dataset, fsplit):
 
   print('Generating great graph...')
   if data == 'OGB':
-    G_all, undirected = OGB_to_nx(nodes_ini, edges_ini)
+    G_all, undirected = OGB_to_nx(fsplit, nodes_ini, edges_ini)
   elif data == 'Plan':
     G_all, undirected = planetoid_to_nx(dataset)
     
@@ -562,6 +567,30 @@ def main():
 #   return (nodes, edges)
 
 def test():
+  l = [1,2,3,4,5,6,7,8]
+  edges= [[1, 6,9,8],[2,10,11,7]]
+
+
+  edge_index_tensor = torch.LongTensor([x for x in edges])
+  nodes_subset_tensor = torch.LongTensor([x for x in l])
+  edge_index, _ = utils.subgraph(nodes_subset_tensor, edge_index_tensor)
+
+  edge_list = []
+  for k in range(len(edge_index[0])):
+    edge_list.append((int(edge_index[0][k]), int(edge_index[1][k])))
+
+
+  G = nx.Graph()
+  G.add_nodes_from(l)
+  G.add_edges_from(edge_list)
+  print(G.number_of_edges())
+  print(G.edges)
+  print(G.nodes)
+  sub = [11, 9, 6, 3]
+  G2 = G.subgraph(sub)
+  print(G2)
+  print(G2.edges)
+  print(G2.nodes)
   '''
   dataset = Planetoid(name='Cora', root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
   print(utils.homophily_ratio(dataset[0].edge_index, dataset[0].y))
@@ -569,7 +598,7 @@ def test():
   print(dataset[0])
   G = utils.to_networkx(D)
   print(G.number_of_nodes())'''
-
+'''
   name = input('Choose OGB dataset node prediction [arxiv, products, proteins, mag, papers100M]: ')
   name = 'ogbn-' + name
   dataset = ogbn.NodePropPredDataset(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
@@ -579,7 +608,7 @@ def test():
   for d in dataset[0]:
     print(type(d))
     print(d)
-    print('\n')
+    print('\n')'''
 '''
   edges_tensor = torch.LongTensor([x for x in dataset[0][0]['edge_index']])
   m = torch.LongTensor([x for x in dataset[0][1]])

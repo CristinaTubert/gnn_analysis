@@ -495,8 +495,13 @@ def test():
     name = input('Choose dataset node prediction [molhiv, molpcba, ppa, code]: ')
     name = 'ogbg-' + name
     dataset = ogbg.GraphPropPredDataset(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
-    print(dataset)
-    print(dataset[55970][0])
+    print(len(dataset))
+    print(type(dataset))
+    print(type(dataset[0]))
+    for d in dataset[455]:
+      print(type(d))
+      print(d)
+      print('\n')
 
 if __name__ == '__main__':
-  main()
+  test()
