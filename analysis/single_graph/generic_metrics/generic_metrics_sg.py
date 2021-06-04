@@ -6,6 +6,7 @@ import networkx.algorithms.community as nxcom
 import random as rand
 import csv
 import os.path
+import pickle
 
 
 import collections
@@ -41,7 +42,7 @@ def choose_dataset():
     fsplit = input('Choose dataset first split [train, valid, test, no-split]: ')
 
   elif data == 'Plan':
-    name = input('Choose Planetoid dataset [Cora, CiteSeer]: ')
+    name = input('Choose Planetoid dataset [Cora, CiteSeer, PubMed]: ')
     dataset = Planetoid(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
     fsplit = 'no-split'
 
@@ -126,11 +127,22 @@ def planetoid_to_nx(dataset):
 
   return G, undirected
 
-def graph_processing(G, G_all, nodes, undirected):
+def graph_processing(G, G_all, nodes, undirected, i):
   num_nodes = G.number_of_nodes()
   num_edges = G.number_of_edges()
 
-  real_degree_sequence = sorted([d for n, d in G_all.degree(nodes)])
+  name = values_dict['Dataset name'][-1]
+  if name[-1] == '*':
+    name = name[:-1]
+
+  path_picke = path = "./degree_lists/degree_list.txt" 
+  degrees = [name, values_dict['First split'], TYPE_SPLIT, SIZE_SPLIT, i]
+  deg = G_all.degree(nodes)
+  degrees+= deg
+  with open(path_picke, 'ab') as fp:
+    pickle.dump(degrees, fp)
+
+  real_degree_sequence = sorted([d for n, d in deg])
   real_avg_degree = sum(real_degree_sequence) / num_nodes
 
   degree_sequence = sorted([d for n, d in G.degree()])
@@ -171,12 +183,20 @@ def get_biggest_CC(G, undirected):
 def CC_processing(cc, undirected):
   num_nodes = cc.number_of_nodes()
   num_edges = cc.number_of_edges()
-
+  
   avg_path_length = nx.average_shortest_path_length(cc)
   diameter = nx.diameter(cc)
   radius = nx.radius(cc)
   node_connectivity = nx.algorithms.connectivity.connectivity.node_connectivity(cc)
   edge_connectivity = nx.algorithms.connectivity.connectivity.edge_connectivity(cc)
+
+  '''
+  avg_path_length = None
+  diameter = None
+  radius = None
+  node_connectivity = None
+  edge_connectivity = None
+  '''
 
   values_dict['BCC num nodes'].append(num_nodes)
   values_dict['BCC num edges'].append(num_edges)
@@ -189,11 +209,17 @@ def CC_processing(cc, undirected):
 def community_detection(G, undirected, i):
 
   try:
+    
     gm_lcom = list(nxcom.greedy_modularity_communities(G))
     gm_communities = len(gm_lcom)
     gm_modularity = nxcom.modularity(G, gm_lcom)
     gm_coverage = nxcom.coverage(G, gm_lcom)
-
+    '''
+    gm_lcom = None
+    gm_communities = None
+    gm_modularity = None
+    gm_coverage = None
+    '''
     # result = nxcom.girvan_newman(G)
     # print(list(result))
     # gn_lcom = next(result)
@@ -475,7 +501,7 @@ def graph_to_characterization(G, G_all, nodes, undirected, i):
   time_ini = time.time()
 
   print('Graph processing...')
-  graph_processing(G, G_all, nodes, undirected)
+  graph_processing(G, G_all, nodes, undirected, i)
   cc = get_biggest_CC(G, undirected)
   print('CC processing...')
   CC_processing(cc, undirected)
@@ -513,10 +539,26 @@ def split_control(name, data, dataset, fsplit):
 
   elif TYPE_SPLIT == 'ordered':
     lim = len(nodes_ini)
-    total_it = len(nodes_ini)//SIZE_SPLIT
+    print(lim)
+    total_it = lim//SIZE_SPLIT 
+    print(total_it)
     num_it = int(input('Choose number of iterations for ordered splits [1, ' + str(total_it) + ']: '))
-    step = (total_it//num_it)*SIZE_SPLIT
+    print(num_it)
+    use_nodes = num_it * SIZE_SPLIT
+    gap_nodes = lim - use_nodes
+    print(gap_nodes)
+    if num_it == 1:
+      num_gap = gap_nodes//(num_it)
+    else:
+      num_gap = gap_nodes//(num_it-1)
+      print(num_gap)
+    step = num_gap+SIZE_SPLIT
+    if num_it == 1:
+      res = gap_nodes%(num_it)
+    else:  
+      res = gap_nodes%(num_it-1)
     print(step)
+    print(res)
     values_dict['Type split'] = str(num_it) + ' ordered iterations'
 
   print('Generating great graph...')
@@ -525,9 +567,14 @@ def split_control(name, data, dataset, fsplit):
   elif data == 'Plan':
     G_all, undirected = planetoid_to_nx(dataset)
     
-  for i in range(0, lim, step):
+  i = 0
+  while i < lim:
     print('Iteration ' + str(i))
     split_to_results(name, G_all, nodes_ini, undirected, i)
+    i+=step
+    if TYPE_SPLIT == 'ordered' and res > 0:
+      i+=1
+      res-=1
   
   if METRICS:
     print('Writing metrics...')
@@ -615,4 +662,4 @@ def test():
   print(utils.homophily_ratio(edges_tensor, m))
 '''
 if __name__ == '__main__':
-  test()
+  main()
