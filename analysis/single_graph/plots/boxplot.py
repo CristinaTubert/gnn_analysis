@@ -26,7 +26,7 @@ def merge_csv():
     df_merged.to_csv("merged.csv")
 '''
 
-name = 'ogbn-arxiv'
+name = 'PubMed'
 yname = 'edge cut ratio'
 
 # Import Data
