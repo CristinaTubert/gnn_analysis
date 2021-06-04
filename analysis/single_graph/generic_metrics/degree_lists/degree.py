@@ -13,7 +13,9 @@ with (open('degree_list.txt', 'rb')) as openfile:
     while True:
         try:
             obj = pickle.load(openfile)
-            if obj[0] == 'PubMed':
+            if obj[3]%10 != 0:
+                print(obj[0])
+                print(obj[3])
                 objects.append(obj)
         except EOFError:
             break
