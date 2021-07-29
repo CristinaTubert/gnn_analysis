@@ -1,0 +1,10 @@
+OGB
+proteins
+no-split
+1
+0
+0
+2650
+all
+random2
+50

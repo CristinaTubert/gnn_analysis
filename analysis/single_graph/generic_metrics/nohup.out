@@ -1,0 +1,36 @@
+WARNING:root:The OGB package is out of date. Your version is 1.2.6, while the latest version is 1.3.1.
+Choose data [OGB, Plan]: Choose Planetoid dataset [Cora, CiteSeer, PubMed]: Yelp()
+Data(edge_index=[2, 13954819], test_mask=[716847], train_mask=[716847], val_mask=[716847], x=[716847, 300], y=[716847, 100])
+Yelp()
+Data(edge_index=[2, 13954819], test_mask=[716847], train_mask=[716847], val_mask=[716847], x=[716847, 300], y=[716847, 100])
+716847
+Choose SIZE_SPLIT [0, 716847]: Choose TYPE_SPLIT [random, ordered, random2]: 716847
+50
+Choose number of iterations for ordered/random2 splits [1, 50]: WARNING:root:The OGB package is out of date. Your version is 1.2.6, while the latest version is 1.3.1.
+Choose data [OGB, Plan]: Choose Planetoid dataset [Cora, CiteSeer, PubMed]: Yelp()
+Data(edge_index=[2, 13954819], test_mask=[716847], train_mask=[716847], val_mask=[716847], x=[716847, 300], y=[716847, 100])
+Yelp()
+Data(edge_index=[2, 13954819], test_mask=[716847], train_mask=[716847], val_mask=[716847], x=[716847, 300], y=[716847, 100])
+716847
+Choose SIZE_SPLIT [0, 716847]: Choose TYPE_SPLIT [random, ordered, random2]: 716847
+50
+Choose number of iterations for ordered/random2 splits [1, 50]: WARNING:root:The OGB package is out of date. Your version is 1.2.6, while the latest version is 1.3.1.
+Choose data [OGB, Plan]: Choose Planetoid dataset [Cora, CiteSeer, PubMed]: Yelp()
+Data(edge_index=[2, 13954819], test_mask=[716847], train_mask=[716847], val_mask=[716847], x=[716847, 300], y=[716847, 100])
+Yelp()
+Data(edge_index=[2, 13954819], test_mask=[716847], train_mask=[716847], val_mask=[716847], x=[716847, 300], y=[716847, 100])
+716847
+Choose SIZE_SPLIT [0, 716847]: Choose TYPE_SPLIT [random, ordered, random2]: 716847
+50
+Choose number of iterations for ordered/random2 splits [1, 50]: WARNING:root:The OGB package is out of date. Your version is 1.2.6, while the latest version is 1.3.1.
+Choose data [OGB, Plan]: Choose Planetoid dataset [Cora, CiteSeer, PubMed]: Yelp()
+Data(edge_index=[2, 13954819], test_mask=[716847], train_mask=[716847], val_mask=[716847], x=[716847, 300], y=[716847, 100])
+Yelp()
+Data(edge_index=[2, 13954819], test_mask=[716847], train_mask=[716847], val_mask=[716847], x=[716847, 300], y=[716847, 100])
+716847
+Choose SIZE_SPLIT [0, 716847]: Choose TYPE_SPLIT [random, ordered, random2]: 716847
+50
+Choose number of iterations for ordered/random2 splits [1, 50]: WARNING:root:The OGB package is out of date. Your version is 1.2.6, while the latest version is 1.3.1.
+Choose data [OGB, Plan]: Choose OGB dataset node prediction [arxiv, products, proteins, mag, papers100M]: Choose dataset first split [train, valid, test, no-split]: Choose SIZE_SPLIT [0, 132534]: Choose TYPE_SPLIT [random, ordered, random2]: 132534
+50
+Choose number of iterations for ordered/random2 splits [1, 50]: 

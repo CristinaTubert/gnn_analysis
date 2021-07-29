@@ -22,6 +22,8 @@ import torch_geometric
 import torch
 
 from torch_geometric.datasets import Planetoid
+import torch_geometric.datasets as tg
+from torch_geometric.datasets import SNAPDataset
 
 METRICS = -1
 DEGREE_HIST = -1
@@ -43,7 +45,14 @@ def choose_dataset():
 
   elif data == 'Plan':
     name = input('Choose Planetoid dataset [Cora, CiteSeer, PubMed]: ')
-    dataset = Planetoid(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
+    
+    name='Yelp'
+    root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets/Yelp'
+    dataset = tg.Yelp(root=root)
+    print(dataset)
+    print(dataset[0])
+    
+    #dataset = Planetoid(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
     fsplit = 'no-split'
 
   ini_dict(fsplit)
@@ -60,7 +69,7 @@ def choose_globals(num_nodes):
     METRICS_RESULTS = input('Choose METRICS_RESULTS [mean, all]: ')
 
   global TYPE_SPLIT
-  TYPE_SPLIT = input('Choose TYPE_SPLIT [random, ordered]: ')
+  TYPE_SPLIT = input('Choose TYPE_SPLIT [random, ordered, random2]: ')
 
 def first_split(data, dataset, fsplit):
   if data == 'OGB':
@@ -79,6 +88,9 @@ def first_split(data, dataset, fsplit):
 
   elif data == 'Plan':
     nodes_ini = list(range(0, len(dataset[0].y))) #always no split
+    print(dataset)
+    print(dataset[0])
+    print(len(dataset[0].y))
     edges_ini = -1 #no matter
 
   return (nodes_ini, edges_ini)
@@ -88,7 +100,7 @@ def second_split(G_all, nodes_ini, i):
     rand.shuffle(nodes_ini)
     nodes = nodes_ini[0:SIZE_SPLIT]
 
-  elif TYPE_SPLIT == 'ordered':
+  elif TYPE_SPLIT == 'ordered' or TYPE_SPLIT == 'random2':
     j = min( (i+SIZE_SPLIT), len(nodes_ini) )
     nodes = nodes_ini[i:j]
 
@@ -121,7 +133,8 @@ def OGB_to_nx(fsplit, nodes_ini, edges_ini):
 def planetoid_to_nx(dataset):
   D = Data(dataset[0].x, dataset[0].edge_index, dataset[0].y)
   #print(dataset[0].edge_index)
-  G = utils.to_networkx(D)
+  #G = utils.to_networkx(D)
+  G = utils.to_networkx(D, to_undirected=True)
 
   undirected = not nx.is_directed(G)
 
@@ -134,13 +147,14 @@ def graph_processing(G, G_all, nodes, undirected, i):
   name = values_dict['Dataset name'][-1]
   if name[-1] == '*':
     name = name[:-1]
-
-  path_picke = path = "./degree_lists/degree_list.txt" 
-  degrees = [name, values_dict['First split'], TYPE_SPLIT, SIZE_SPLIT, i]
+  
+  path_picke = path = "./degree_lists/new_degree_list.txt" 
+  degrees = [values_dict['Dataset name'], values_dict['First split'], TYPE_SPLIT, SIZE_SPLIT, i]
   deg = G_all.degree(nodes)
   degrees+= deg
-  with open(path_picke, 'ab') as fp:
-    pickle.dump(degrees, fp)
+
+  # with open(path_picke, 'ab') as fp:
+  #   pickle.dump(degrees, fp)
 
   real_degree_sequence = sorted([d for n, d in deg])
   real_avg_degree = sum(real_degree_sequence) / num_nodes
@@ -154,10 +168,16 @@ def graph_processing(G, G_all, nodes, undirected, i):
     rd = G_all.degree(n)
     d = G.degree(n)
     edge_cut += rd - d
-
+  '''
   avg_clustering = nx.algorithms.cluster.average_clustering(G)
+  global_clustering = nx.algorithms.cluster.transitivity(G)
 
   density = nx.density(G)
+  '''
+  avg_clustering = 0
+  global_clustering = 0
+
+  density = 0
 
   values_dict['Num nodes'].append(num_nodes)
   values_dict['Num edges'].append(num_edges)
@@ -165,9 +185,11 @@ def graph_processing(G, G_all, nodes, undirected, i):
   values_dict['Average degree'].append(avg_degree)
   values_dict['Edge cut'].append(edge_cut)
   values_dict['Average clustering'].append(avg_clustering)
+  values_dict['Transitivity'].append(global_clustering)
   values_dict['Density'].append(density)
 
 def get_biggest_CC(G, undirected):
+  
   if undirected:
     CC = [G.subgraph(c) for c in sorted(nx.algorithms.components.connected_components(G), key=len, reverse=True)]
   else:
@@ -183,20 +205,21 @@ def get_biggest_CC(G, undirected):
 def CC_processing(cc, undirected):
   num_nodes = cc.number_of_nodes()
   num_edges = cc.number_of_edges()
-  
-  avg_path_length = nx.average_shortest_path_length(cc)
-  diameter = nx.diameter(cc)
-  radius = nx.radius(cc)
-  node_connectivity = nx.algorithms.connectivity.connectivity.node_connectivity(cc)
-  edge_connectivity = nx.algorithms.connectivity.connectivity.edge_connectivity(cc)
 
-  '''
+  # try:
+  #   avg_path_length = nx.average_shortest_path_length(cc)
+  #   diameter = nx.diameter(cc)
+  #   radius = nx.radius(cc)
+  #   node_connectivity = nx.algorithms.connectivity.connectivity.node_connectivity(cc)
+  #   edge_connectivity = nx.algorithms.connectivity.connectivity.edge_connectivity(cc)
+
+  # except:
+  
   avg_path_length = None
   diameter = None
   radius = None
   node_connectivity = None
   edge_connectivity = None
-  '''
 
   values_dict['BCC num nodes'].append(num_nodes)
   values_dict['BCC num edges'].append(num_edges)
@@ -209,17 +232,18 @@ def CC_processing(cc, undirected):
 def community_detection(G, undirected, i):
 
   try:
-    
+    '''
     gm_lcom = list(nxcom.greedy_modularity_communities(G))
     gm_communities = len(gm_lcom)
     gm_modularity = nxcom.modularity(G, gm_lcom)
     gm_coverage = nxcom.coverage(G, gm_lcom)
     '''
+
     gm_lcom = None
     gm_communities = None
     gm_modularity = None
     gm_coverage = None
-    '''
+
     # result = nxcom.girvan_newman(G)
     # print(list(result))
     # gn_lcom = next(result)
@@ -260,12 +284,46 @@ def community_detection(G, undirected, i):
       print('COMMUNITY ERROR')
 
   finally:
+    '''
+    try:
+      path_picke = path = "./communities_lists/community_list.txt" 
+      communities = [values_dict['Dataset name'], values_dict['First split'], TYPE_SPLIT, SIZE_SPLIT, gm_modularity, gm_coverage, gm_communities]
+
+      set_com = []
+      for com in gm_lcom:
+        set_com.append(len(com))
+
+      communities+= set_com
+      with open(path_picke, 'ab') as fp:
+        pickle.dump(communities, fp)
+    except:
+      print('')
+
+    '''
     values_dict['BCC num greedy modularity communities'].append(gm_communities)
     values_dict['Modularity greedy modularity communities'].append(gm_modularity)
     values_dict['Coverage greedy modularity communities'].append(gm_coverage)
     # values_dict['BCC girvan newman communities'].append(gn_communities)
     # values_dict['Modularity girvan newman communities'].append(gn_modularity)
     # values_dict['Coverage girvan newman communities'].append(gn_coverage)
+
+    # try:
+    #   print('Cliques')
+
+    #   if nx.is_directed(G):
+    #     G_un=nx.to_undirected(G)
+    #   else:
+    #     G_un=G
+
+    #   max_clique = len(max( list(nx.find_cliques(G_un)), key=lambda x:len(x) ))
+    #   values_dict['Max clique'].append(max_clique)
+    
+    # except:
+    #   print('ERROR CLIQUE')
+    #   values_dict['Max clique'].append(-1)
+
+
+    values_dict['Max clique'].append(0)
 
     if COM_HIST and gm_communities > 0:
       histogram_community(gm_lcom, i)
@@ -327,7 +385,7 @@ def histogram_community(communities, i):
   if TYPE_SPLIT == 'random':
     path = "./community_hist/" + name + "/random/" "/com" + str(SIZE_SPLIT) + "_" + str(i) + ".png" 
   
-  elif TYPE_SPLIT == 'ordered':
+  elif TYPE_SPLIT == 'ordered' or TYPE_SPLIT == 'random2':
     path = "./community_hist/" + name + "/com" + str(SIZE_SPLIT) + "_" + str(i) + ".png"
 
   plt.savefig(path)
@@ -404,7 +462,7 @@ def histogram_degree(G, G_all, nodes, undirected, i):
   if TYPE_SPLIT == 'random':
     path = "./degree_hist/" + name + "/random/" "/deg" + str(SIZE_SPLIT) + "_" + str(i) + ".png" 
   
-  elif TYPE_SPLIT == 'ordered':
+  elif TYPE_SPLIT == 'ordered' or TYPE_SPLIT == 'random2':
     path = "./degree_hist/" + name + "/deg" + str(SIZE_SPLIT) + "_" + str(i) + ".png"
 
   plt.savefig(path)
@@ -421,6 +479,7 @@ def ini_dict(fsplit):
   values_dict['Edge cut'] = []
   values_dict['Average clustering'] = []
   values_dict['Density'] = []
+  values_dict['Transitivity'] = []
   values_dict['Num CC'] = []
   values_dict['BCC num nodes'] = []
   values_dict['BCC num edges'] = []
@@ -432,6 +491,7 @@ def ini_dict(fsplit):
   values_dict['BCC num greedy modularity communities'] = []
   values_dict['Modularity greedy modularity communities'] = []
   values_dict['Coverage greedy modularity communities'] = []
+  values_dict['Max clique'] = []
   # values_dict['BCC girvan newman communities'] = []
   # values_dict['Modularity girvan newman communities'] = []
   # values_dict['Coverage girvan newman communities'] = []
@@ -453,6 +513,7 @@ def get_subdict(i):
   subdict = {}
   for key,value in values_dict.items():
     if type(value) == list:
+      print(key)
       value = value[i]
     subdict[key] = value
   return subdict
@@ -537,12 +598,12 @@ def split_control(name, data, dataset, fsplit):
     step = 1
     values_dict['Type split'] = str(lim) + ' random iterations'
 
-  elif TYPE_SPLIT == 'ordered':
+  elif TYPE_SPLIT == 'ordered' or TYPE_SPLIT == 'random2':
     lim = len(nodes_ini)
     print(lim)
     total_it = lim//SIZE_SPLIT 
     print(total_it)
-    num_it = int(input('Choose number of iterations for ordered splits [1, ' + str(total_it) + ']: '))
+    num_it = int(input('Choose number of iterations for ordered/random2 splits [1, ' + str(total_it) + ']: '))
     print(num_it)
     use_nodes = num_it * SIZE_SPLIT
     gap_nodes = lim - use_nodes
@@ -559,20 +620,27 @@ def split_control(name, data, dataset, fsplit):
       res = gap_nodes%(num_it-1)
     print(step)
     print(res)
-    values_dict['Type split'] = str(num_it) + ' ordered iterations'
+    
+    if TYPE_SPLIT == 'ordered':
+      values_dict['Type split'] = str(num_it) + ' ordered iterations'
+    elif TYPE_SPLIT == 'random2':
+      values_dict['Type split'] = str(num_it) + ' random2 iterations'
 
   print('Generating great graph...')
   if data == 'OGB':
     G_all, undirected = OGB_to_nx(fsplit, nodes_ini, edges_ini)
   elif data == 'Plan':
     G_all, undirected = planetoid_to_nx(dataset)
-    
+  
+  if TYPE_SPLIT == 'random2':
+    rand.shuffle(nodes_ini)
+
   i = 0
   while i < lim:
     print('Iteration ' + str(i))
     split_to_results(name, G_all, nodes_ini, undirected, i)
     i+=step
-    if TYPE_SPLIT == 'ordered' and res > 0:
+    if (TYPE_SPLIT == 'ordered'  or TYPE_SPLIT == 'random2') and res > 0:
       i+=1
       res-=1
   
@@ -614,52 +682,82 @@ def main():
 #   return (nodes, edges)
 
 def test():
-  l = [1,2,3,4,5,6,7,8]
-  edges= [[1, 6,9,8],[2,10,11,7]]
+
+  # l = [1,2,3,4,5,6,7,8]
+  # edges= [[1, 6,9,8],[2,10,11,7]]
 
 
-  edge_index_tensor = torch.LongTensor([x for x in edges])
-  nodes_subset_tensor = torch.LongTensor([x for x in l])
-  edge_index, _ = utils.subgraph(nodes_subset_tensor, edge_index_tensor)
+  # edge_index_tensor = torch.LongTensor([x for x in edges])
+  # nodes_subset_tensor = torch.LongTensor([x for x in l])
+  # edge_index, _ = utils.subgraph(nodes_subset_tensor, edge_index_tensor)
 
-  edge_list = []
-  for k in range(len(edge_index[0])):
-    edge_list.append((int(edge_index[0][k]), int(edge_index[1][k])))
+  # edge_list = []
+  # for k in range(len(edge_index[0])):
+  #   edge_list.append((int(edge_index[0][k]), int(edge_index[1][k])))
 
 
-  G = nx.Graph()
-  G.add_nodes_from(l)
-  G.add_edges_from(edge_list)
-  print(G.number_of_edges())
-  print(G.edges)
-  print(G.nodes)
-  sub = [11, 9, 6, 3]
-  G2 = G.subgraph(sub)
-  print(G2)
-  print(G2.edges)
-  print(G2.nodes)
-  '''
+  # G = nx.Graph()
+  # G.add_nodes_from(l)
+  # G.add_edges_from(edge_list)
+  # print(G.number_of_edges())
+  # print(G.edges)
+  # print(G.nodes)
+  # sub = [11, 9, 6, 3]
+  # G2 = G.subgraph(sub)
+  # print(G2)
+  # print(G2.edges)
+  # print(G2.nodes)
+
+  # name = input('Choose OGB dataset node prediction [arxiv, products, proteins, mag, papers100M]: ')
+  # name = 'ogbn-' + name
+  # dataset = ogbn.NodePropPredDataset(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
+  # print(type(dataset))
+  # print(type(dataset[0]))
+  # print(dataset[0])
+  # for d in dataset[0]:
+  #   print(type(d))
+  #   print(d)
+  #   print('\n')
+
   dataset = Planetoid(name='Cora', root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
   print(utils.homophily_ratio(dataset[0].edge_index, dataset[0].y))
   D = Data(dataset[0].x, dataset[0].edge_index, dataset[0].y)
   print(dataset[0])
   G = utils.to_networkx(D)
-  print(G.number_of_nodes())'''
-'''
-  name = input('Choose OGB dataset node prediction [arxiv, products, proteins, mag, papers100M]: ')
-  name = 'ogbn-' + name
-  dataset = ogbn.NodePropPredDataset(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
-  print(type(dataset))
-  print(type(dataset[0]))
-  print(dataset[0])
-  for d in dataset[0]:
-    print(type(d))
-    print(d)
-    print('\n')'''
-'''
-  edges_tensor = torch.LongTensor([x for x in dataset[0][0]['edge_index']])
-  m = torch.LongTensor([x for x in dataset[0][1]])
-  print(utils.homophily_ratio(edges_tensor, m))
-'''
+  print(G.number_of_nodes())
+  G2 = nx.to_undirected(G)
+
+  cliques = list(nx.find_cliques(G2))
+  print(cliques)
+  print(max( list(nx.find_cliques(G2)), key=lambda x:len(x)))
+
+  # edges_tensor = torch.LongTensor([x for x in dataset[0][0]['edge_index']])
+  # m = torch.LongTensor([x for x in dataset[0][1]])
+  # print(utils.homophily_ratio(edges_tensor, m))
+
 if __name__ == '__main__':
+  # name = input('Choose OGB dataset node prediction [arxiv, products, proteins, mag, papers100M]: ')
+  # name = 'ogbn-' + name
+  # dataset = ogbn.NodePropPredDataset(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
+  # nodes_ini = list(range(0, dataset[0][0]['num_nodes']))
+  # edges_ini = dataset[0][0]['edge_index']
+  
+  # edges_tensor = torch.LongTensor([x for x in edges_ini])
+  # undirected = utils.is_undirected(edges_tensor)
+  # print(undirected)
+
+  # edge_list = []
+  # for i in range(len(edges_ini[0])):
+  #   edge_list.append((int(edges_ini[0][i]), int(edges_ini[1][i])))
+
+  # if undirected:
+  #   G = nx.Graph()
+  # else:
+  #   G = nx.DiGraph()
+    
+  # G.add_nodes_from(nodes_ini)
+  # G.add_edges_from(edge_list)
+  # print(nx.algorithms.cluster.transitivity(G))
+
+  
   main()
