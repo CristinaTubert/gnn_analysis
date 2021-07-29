@@ -23,8 +23,23 @@ with open(path,'r') as csvfile:
         y.append(float(row[8]))
 
 df = pd.read_csv(path)
-pp = sns.pairplot(df, kind='scatter', hue='Dataset name', height=3, x_vars= ['Num nodes', 'Num edges', 'Density'], y_vars=['Cluster coefficient'], plot_kws=dict(s=80, edgecolor='white', linewidth=2.5))
+x_vars=['Num nodes', 'Density']
+colors={'Actor':'crimson', 'CiteSeer':'tomato', 'CoauthorCS':'sandybrown', 'Cora':'gold', 'Flickr':'palegreen', 'PubMed':'mediumseagreen', 'Yelp':'lightskyblue', 'ogbn-arxiv':'navy', 'ogbn-products':'mediumpurple', 'ogbn-proteins':'palevioletred'}
+pp = sns.pairplot(df, kind='scatter', hue='Dataset name', palette=colors, height=5, x_vars= x_vars, y_vars=['Transitivity'], plot_kws=dict(s=80, edgecolor='white', linewidth=0.5, alpha=0.8), )
 pp.set(xscale='log')
+count=0
+for ax in pp.axes.flat:
+    ax.spines['top'].set_visible(True)
+    ax.spines['right'].set_visible(True)
+    ax.tick_params(axis='y', labelleft=True)
+    ax.grid(axis='both', color='gray', linewidth=0.2)
+    x_label= x_vars[count]+ ' (log scale)'
+    ax.set_xlabel(x_label)
+    count+=1
+
+pp._legend.remove()
+plt.tight_layout(pad=2.0)
+plt.subplots_adjust(bottom=0.35, wspace=0.2, top=0.85)
 
 '''
 plt.scatter(x,y,s=5)
@@ -43,6 +58,6 @@ plt.title('cluster coefficient - density CORRELATION', fontsize=10, fontweight='
 
 plt.grid()
 '''
-
+plt.legend(loc='upper center', fontsize='small', ncol=10, bbox_to_anchor=(-0.16,-0.4), shadow=True)
 path_out = './cluster_density-' + name + '.png'
-plt.savefig(path_out)
+plt.savefig(path_out, dpi=200)

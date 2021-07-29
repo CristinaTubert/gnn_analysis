@@ -26,8 +26,9 @@ def merge_csv():
     df_merged.to_csv("merged.csv")
 '''
 
-name = 'PubMed'
-yname = 'edge cut ratio'
+name = 'ogbn-products'
+yname = 'edge cut / node'
+num_nodes = 2449029
 
 # Import Data
 path = '../generic_metrics/results/all/' + name + '.csv'
@@ -42,26 +43,32 @@ with open(path,'r') as csvfile:
         if row[0] == 'Dataset name':
             continue
         
-        if int(row[3])%10 != 0:
+        if int(row[3])== num_nodes:
             continue
 
         x.append(int(row[3])) #num nodes (split size)
-        edge_cut_ratio = int(row[7]) / (int(row[7]) + int(row[4]))
-        y.append(edge_cut_ratio) #redge_cuts
+        #edge_cut_ratio = int(row[7]) / (int(row[7]) + int(row[4]))
+        edge_node = int(row[7])/int(row[3])
+        y.append(edge_node)
 
-        if row[-1].find('random') != -1:
+        if row[-1].find('ordered') != -1:
+            z.append('ordered')
+
+        elif row[-1].find('random2') != -1:
             z.append('random')
 
         else:
-            z.append('ordered')
+            continue
 
 # Draw Plot
-plt.figure(figsize=(13,10), dpi= 80)
+plt.figure(figsize=(13,10), dpi= 200)
 size_split = sorted(list(set(x)))
-ax = sns.boxplot(x=x, y=y, hue=z, order=size_split, notch=False, linewidth=0.5, fliersize=3, palette='Set2', meanline=True, whis=1.5)
+colors={'ordered':'darkorange', 'random':'lightgreen'}
+ax = sns.boxplot(x=x, y=y, hue=z, order=size_split, notch=False, linewidth=0.5, fliersize=3, palette=colors, meanline=True, whis=1.5, flierprops=dict(markerfacecolor='purple', markeredgecolor='purple'))
 plt.setp(ax.lines, color='red')
 for i in range(len(size_split)-1):
-    plt.vlines(i+.5, max(y)+0.0002, min(y), linestyles='dashed', colors='gray', alpha=0.5)
+    plt.vlines(i+.5, max(y), min(y)-0.1, linestyles='dashed', colors='gray', alpha=0.5)
+
 
 xz = [(x[i], z[i]) for i in range(0, len(x))]
 result = {i:[] for i in xz}
@@ -84,6 +91,7 @@ all_outliers = sorted(all_outliers)
 sizes = sorted(list(set([s[0] for s,o in all_outliers])))
 xticks = ax.get_xticks()
 
+
 print(sizes)
 outlier_i = 0
 tick = 0
@@ -91,16 +99,18 @@ while outlier_i < len(all_outliers) and tick < len(xticks):
     outlier=all_outliers[outlier_i]
 
     if (outlier[0][0] == sizes[tick] and outlier[0][1] == 'ordered'):
-        ax.text(xticks[tick]-0.25, 1.0001, '{:.4f}'.format(outlier[1]), horizontalalignment='center', size='x-small', color='black', rotation=45)
+        ax.text(xticks[tick]-0.25, max(y)+0.05, '{:.4f}'.format(outlier[1]), horizontalalignment='center', size='x-small', color='purple', rotation=45)
         outlier_i+=1
 
     elif (outlier[0][0] == sizes[tick] and outlier[0][1] == 'random'):
-        ax.text(xticks[tick]+0.25, 1.0001, '{:.4f}'.format(outlier[1]), horizontalalignment='center', size='x-small', color='black', rotation=45)
+        ax.text(xticks[tick]+0.25, max(y)+0.05, '{:.4f}'.format(outlier[1]), horizontalalignment='center', size='x-small', color='purple', rotation=45)
         outlier_i+=1
 
     else:
         tick+=1
-      
+
+ax.text(-0.9, max(y)+0.06, 'outliers \nratio', horizontalalignment='center', size='x-small', color='purple')
+
 '''
 lines = ax.axes.get_lines()
 boxes = [c for c in ax.get_children() if type(c).__name__ == 'PathPatch']
@@ -120,54 +130,23 @@ for median in lines[2:len(lines):lines_per_box]:
 
 plt.xlabel('# nodes', fontsize=12, labelpad=20.0)
 plt.ylabel(yname, fontsize=12, labelpad=20.0)
-plt.ylim(min(y), max(y)+0.03)
-suptitle = yname.upper() + ' by split size'
-title = name
-plt.suptitle(suptitle, y=0.95, fontsize=15, fontweight='bold')
-plt.title(title, fontsize=12)
 
-plt.legend(loc='lower left')
+xticklabels=[]
+for s in sizes:
+    l = str(s)+ '\n ('+ str('{:.2f}'.format((s/num_nodes) * 100)) + '%)'
+    xticklabels.append(l)
+
+plt.xticks(ticks=xticks, labels=xticklabels)
+plt.ylim(min(y)-3.5, max(y)+1)
+suptitle = yname.upper() + ' by split size'
+title = name + ' [' + str(num_nodes) + ' nodes]'
+plt.suptitle(suptitle, y=0.95, fontsize=15, fontweight='bold')
+plt.title(title, fontsize=12, pad=40.0)
+
+plt.subplots_adjust(hspace=0.4, top=0.85)
+
+plt.legend(loc='upper right')
 plt.grid(axis='y', color='gray', which='both', linewidth=0.2)
 sns.despine()
-path_out = './' + name + '_' + yname.replace(' ', '_') + '.png'
+path_out = './' + name + '_' + yname.replace(' ', '_').replace('/', '') + '.png'
 plt.savefig(path_out)
-
-'''
-path = '../generic_metrics/results/all/' + name + '.csv'
-with open(path,'r') as csvfile:
-    plots = csv.reader(csvfile, delimiter=',')
-    for row in plots:
-        if row[0] == 'Dataset name':
-            continue
-        x.append(int(row[5]))
-        y.append(int(row[6]))
-
-xy = list(zip(x,y))
-cnt = Counter(xy)
-z = [cnt[coord] for coord in xy]
-
-plt.scatter(x,y,s=2,c=z,cmap='gnuplot')
-
-plt.xticks(fontsize=8)
-plt.yticks(fontsize=8)
-
-#plt.yticks(np.arange(min(y), max(y)+1, step=100))
-plt.xlabel('# nodes')
-plt.ylabel('# edges')
-title = 'ogbg-' + name + ' [' + str(len(x)) + ' graphs]'
-plt.suptitle('NODE-EDGE CORRELATION', y=0.98, fontsize=10, fontweight='bold')
-plt.title(title, fontsize=9)
-#plt.legend(fontsize=8, loc='best', markerscale=2.0)
-
-cbar = plt.colorbar()
-#t = 5*round((len(x)//10)/5)
-#cbar.set_ticks(MultipleLocator(t))
-cbar.ax.tick_params(labelsize=8)
-cbar.ax.set_title('# graphs', fontsize=8)
-
-plt.grid()
-
-path_out = './node-edge/ogbg-' + name + '.png'
-plt.savefig(path_out)
-
-'''
