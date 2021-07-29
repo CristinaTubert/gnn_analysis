@@ -17,6 +17,9 @@ import torch_geometric.utils as utils
 import torch_geometric
 import torch
 
+
+from torch_geometric.datasets import SNAPDataset
+
 METRICS = -1
 DEGREE_HIST = -1
 COM_HIST = -1
@@ -103,6 +106,7 @@ def graph_processing(G, undirected):
   avg_degree = sum(degree_sequence) / num_nodes
 
   avg_clustering = nx.algorithms.cluster.average_clustering(G)
+  global_clustering = nx.algorithms.cluster.transitivity(G)
 
   density = nx.density(G)
  
@@ -111,6 +115,7 @@ def graph_processing(G, undirected):
   values_dict['Num edges'].append(num_edges)
   values_dict['Average degree'].append(avg_degree)
   values_dict['Average clustering'].append(avg_clustering)
+  values_dict['Transitivity'].append(global_clustering)
   values_dict['Density'].append(density)
 
 def get_biggest_CC(G, undirected):
@@ -201,6 +206,21 @@ def community_detection(G, undirected):
     # values_dict['BCC girvan newman communities'].append(gn_communities)
     # values_dict['Modularity girvan newman communities'].append(gn_modularity)
     # values_dict['Coverage girvan newman communities'].append(gn_coverage)
+
+    try:
+      print('Cliques')
+
+      if nx.is_directed(G):
+        G_un=nx.to_undirected(G)
+      else:
+        G_un=G
+
+      max_clique = len(max( list(nx.find_cliques(G_un)), key=lambda x:len(x) ))
+      values_dict['Max clique'].append(max_clique)
+    
+    except:
+      print('ERROR CLIQUE')
+      values_dict['Max clique'].append(-1)
 
     if COM_HIST and gm_communities > 0:
       histogram_community(gm_lcom)
@@ -357,6 +377,7 @@ def ini_dict(name, fsplit):
   values_dict['Num edges'] = []
   values_dict['Average degree'] = []
   values_dict['Average clustering'] = []
+  values_dict['Transitivity'] = []
   values_dict['Density'] = []
   values_dict['Num CC'] = []
   values_dict['BCC num nodes'] = []
@@ -371,6 +392,7 @@ def ini_dict(name, fsplit):
   values_dict['Coverage greedy modularity communities'] = []
   values_dict['Execution time'] = []
   values_dict['Type split'] = ''
+  values_dict['Max clique'] = []
 
 def mean_dict():
   for key,value in values_dict.items():
@@ -388,7 +410,7 @@ def get_subdict(i):
 def write_csv_all():
   name = values_dict['Dataset name']
   file_name = name + '.csv'
-  path = 'results/all/' + file_name
+  path = 'new_results/all/' + file_name
 
   if os.path.exists(path):
     with open(path, 'a', newline='') as f:
@@ -407,7 +429,7 @@ def write_csv_all():
         w.writerow(subdict)
 
 def write_csv_mean():
-  path = 'results/mean/mean_results.csv'
+  path = 'new_results/mean/mean_results.csv'
 
   if os.path.exists(path):
     with open(path, 'a', newline='') as f:
@@ -492,6 +514,20 @@ def main():
   split_control(dataset, fsplit)
 
 def test():
+  dataset = SNAPDataset(name='soc-slashdot0811', root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
+  print(dataset)
+
+  print(len(dataset))
+  D = Data(dataset[0].x, dataset[0].edge_index, dataset[0].y)
+
+
+  G = utils.to_networkx(D)
+
+  print(G.number_of_nodes())
+  print(D)
+  for d in dataset:
+    print(d)
+  '''
     name = input('Choose dataset node prediction [molhiv, molpcba, ppa, code]: ')
     name = 'ogbg-' + name
     dataset = ogbg.GraphPropPredDataset(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
@@ -502,6 +538,6 @@ def test():
       print(type(d))
       print(d)
       print('\n')
-
+'''
 if __name__ == '__main__':
-  test()
+  main()

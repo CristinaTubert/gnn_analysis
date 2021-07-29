@@ -33,6 +33,7 @@ def choose_dataset():
 
   elif data == 'Plan':
     name = input('Choose Planetoid dataset [Cora, CiteSeer]: ')
+    #dataset = torch_geometric.datasets.Yelp(root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets/Yelp')
     dataset = Planetoid(name=name, root='/home/ctubert/tfg/gitprojects/gnn_analysis/analysis/datasets')
     fsplit = 'no-split'
 
@@ -49,7 +50,7 @@ def choose_globals(num_nodes):
   METRICS_RESULTS = input('Choose METRICS_RESULTS [mean, all]: ')
 
   global TYPE_SPLIT
-  TYPE_SPLIT = input('Choose TYPE_SPLIT [random, ordered]: ')
+  TYPE_SPLIT = input('Choose TYPE_SPLIT [random, ordered, random2]: ')
 
 def first_split(data, dataset, fsplit):
   if data == 'OGB':
@@ -79,7 +80,7 @@ def second_split_OGB(nodes_ini, edges_ini, i):
     rand.shuffle(nodes_ini)
     nodes = nodes_ini[0:SIZE_SPLIT]
 
-  elif TYPE_SPLIT == 'ordered':
+  elif TYPE_SPLIT == 'ordered' or TYPE_SPLIT == 'random2':
     j = min( (i+SIZE_SPLIT), len(nodes_ini) )
     nodes = nodes_ini[i:j]
 
@@ -95,7 +96,7 @@ def second_split_planetoid(preG, nodes_ini, i):
     rand.shuffle(nodes_ini)
     nodes = nodes_ini[0:SIZE_SPLIT]
 
-  elif TYPE_SPLIT == 'ordered':
+  elif TYPE_SPLIT == 'ordered' or TYPE_SPLIT == 'random2':
     j = min( (i+SIZE_SPLIT), len(nodes_ini) )
     nodes = nodes_ini[i:j]
 
@@ -245,18 +246,42 @@ def split_control(data, dataset, fsplit):
     step = 1
     values_dict['Type split'] = str(lim) + ' random iterations'
 
-  elif TYPE_SPLIT == 'ordered':
+  elif TYPE_SPLIT == 'ordered' or TYPE_SPLIT == 'random2':
     lim = len(nodes_ini)
-    total_it = len(nodes_ini)//SIZE_SPLIT
-    num_it = int(input('Choose number of iterations for ordered splits [1, ' + str(total_it) + ']: '))
-    step = (total_it//num_it)*SIZE_SPLIT
+    print(lim)
+    total_it = lim//SIZE_SPLIT 
+    print(total_it)
+    num_it = int(input('Choose number of iterations for ordered/random2 splits [1, ' + str(total_it) + ']: '))
+    print(num_it)
+    use_nodes = num_it * SIZE_SPLIT
+    gap_nodes = lim - use_nodes
+    print(gap_nodes)
+    if num_it == 1:
+      num_gap = gap_nodes//(num_it)
+    else:
+      num_gap = gap_nodes//(num_it-1)
+      print(num_gap)
+    step = num_gap+SIZE_SPLIT
+    if num_it == 1:
+      res = gap_nodes%(num_it)
+    else:  
+      res = gap_nodes%(num_it-1)
     print(step)
-    values_dict['Type split'] = str(num_it) + ' ordered iterations'
+    print(res)
+
+    if TYPE_SPLIT == 'ordered':
+      values_dict['Type split'] = str(num_it) + ' ordered iterations'
+    elif TYPE_SPLIT == 'random2':
+      values_dict['Type split'] = str(num_it) + ' random2 iterations'
 
   if data == 'Plan':
     preG, undirected = planetoid_to_nx(dataset, features, name_features)
+
+  if TYPE_SPLIT == 'random2':
+    rand.shuffle(nodes_ini)
     
-  for i in range(0, lim, step):
+  i = 0
+  while i < lim:
     print('Iteration ' + str(i))
 
     if data == 'OGB':
@@ -271,6 +296,11 @@ def split_control(data, dataset, fsplit):
     values_dict['Num edges'].append(G.number_of_edges())
     
     compute_assortativity(G, undirected, name_features)
+
+    i+=step
+    if (TYPE_SPLIT == 'ordered'  or TYPE_SPLIT == 'random2') and res > 0:
+      i+=1
+      res-=1
   
   print('Writing metrics...')
   if METRICS_RESULTS == 'mean':
