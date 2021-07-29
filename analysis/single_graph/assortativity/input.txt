@@ -1,0 +1,7 @@
+OGB
+products
+no-split
+24490
+all
+random2
+100
